@@ -1,0 +1,102 @@
+<template>
+  <div>
+    <div class="title">
+      <div class="common_title title_left">
+        <div class="timer">{{timer}}</div>
+        <div class="region">宁波市公安局港航分局</div>
+      </div>
+      <div class="title_middle">海港卫士</div>
+      <div class="common_title title_right">
+        <div class="navigation">
+          <div>导航</div>
+          <svg-icon class="xiala"
+                    icon-class="xiala"></svg-icon>
+        </div>
+        <div class="address">浙江省宁波市</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      // 当前的日期
+      timer: ''
+    }
+  },
+  created () {
+    this.getNewTime()
+  },
+  mounted () {
+    document.body.style.backgroundColor = "#020128";
+  },
+  methods: {
+    getNewTime () {
+      this.timer = this.$until.getTime()
+    }
+  },
+}
+</script>
+
+<style lang="less" scoped>
+.title {
+  background: url("../../assets/image/Common/common_title.png") no-repeat;
+  background-size: cover;
+  height: 2.7rem;
+  color: #fff;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.4rem;
+  .title_left {
+    flex: 1;
+    .timer {
+      flex: 1;
+    }
+    .region {
+      flex: 2;
+      text-align: center;
+    }
+  }
+  .title_middle {
+    flex: 2;
+    text-align: center;
+    letter-spacing: 0.3rem;
+    font-weight: bold;
+  }
+  .title_right {
+    flex: 1;
+    .navigation {
+      flex: 2;
+      text-align: center;
+    }
+    .address {
+      flex: 1;
+      text-align: right;
+    }
+  }
+  .common_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    > div {
+      font-size: 0.3rem;
+    }
+    .navigation {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      > div {
+        margin-right: 0.1rem;
+      }
+      .xiala {
+        font-size: 0.16rem;
+        color: #fff;
+      }
+    }
+  }
+}
+</style>
