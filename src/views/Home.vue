@@ -47,37 +47,37 @@ export default {
   height: 100%;
 }
 .box {
-  height: 90%;
+  height: 91%;
   display: flex;
   justify-content: space-between;
-  padding: 0.4rem;
+  padding: 0 0.6rem;
   .box_left {
-    flex: 1;
+    width: 25%;
     .personnel {
-      height: 69%;
+      height: 60%;
     }
     .ships {
-      height: 30%;
-    }
-  }
-  .box_middle {
-    margin: 0 0.3rem;
-    flex: 2;
-    .map {
-      height: 60%;
-      background-color: rgb(167, 84, 84);
-    }
-    .earlyWarning {
       height: 39%;
     }
   }
+  .box_middle {
+    width: 49%;
+    margin: 0 0.3rem;
+    .map {
+      height: 65%;
+      background-color: rgb(167, 84, 84);
+    }
+    .earlyWarning {
+      height: 34%;
+    }
+  }
   .box_right {
-    flex: 1;
+    width: 25%;
     .vehicle {
-      height: 69%;
+      height: 60%;
     }
     .goods {
-      height: 30%;
+      height: 39%;
     }
   }
   .box_common {
@@ -88,7 +88,7 @@ export default {
       background: url("../assets/image/Home/home_bgi.jpg");
       background-size: 100% 100%;
       border-radius: 0.5rem;
-      padding: 0.3rem;
+      padding: 0.6rem;
     }
   }
 }

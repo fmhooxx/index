@@ -19,7 +19,6 @@ export default {
     },
   },
   mounted () {
-    console.log(process.env.outputDir);
     var that = this;
     window.onresize = () => {
       return (() => {
