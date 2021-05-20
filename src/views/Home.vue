@@ -7,7 +7,8 @@
         <ships class="box_bgi ships"></ships>
       </div>
       <div class="box_common box_middle">
-        <div class="map">地图</div>
+        <div class="map"
+             id="map2"></div>
         <earlyWarning class="box_bgi earlyWarning"></earlyWarning>
       </div>
       <div class="box_common box_right">
@@ -35,8 +36,26 @@ export default {
   name: 'Home',
   mounted () {
     document.body.style.backgroundColor = "#020128";
+    this.initMap();
   },
   methods: {
+    initMap () {
+      let map = L.map("map2", {
+        minZoom: 3,
+        maxZoom: 14,
+        center: [39.550339, 116.114129],
+        zoom: 12,
+        zoomControl: false,
+        attributionControl: false,
+        crs: L.CRS.EPSG3857
+      });
+      console.log('map start')
+      this.map = map;　　　　//data上需要挂载
+      window.map = map;
+      L.tileLayer(
+        "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}"
+      ).addTo(map);
+    }
   },
 }
 </script>
@@ -65,7 +84,6 @@ export default {
     margin: 0 0.3rem;
     .map {
       height: 65%;
-      background-color: rgb(167, 84, 84);
     }
     .earlyWarning {
       height: 34%;
