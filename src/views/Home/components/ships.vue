@@ -3,7 +3,7 @@
     <div class="box">
       <div class="box_title">
         <div class="box_title_left">
-          <img src="../../assets/image/Home/right_arrow.png"
+          <img src="../../../assets/image/Home/right_arrow.png"
                alt="船只管控">
           <div>船只管控</div>
         </div>
@@ -38,9 +38,9 @@
 </template>
 
 <script>
-let that = ''
+let that = "";
 export default {
-  data () {
+  data() {
     return {
       // 圆环图中间文字
       annularText: 40,
@@ -48,16 +48,16 @@ export default {
       date: [
         {
           id: 0,
-          text: '日'
+          text: "日",
         },
         {
           id: 1,
-          text: '周'
+          text: "周",
         },
         {
           id: 2,
-          text: '月'
-        }
+          text: "月",
+        },
       ],
       // 日、周、月 当前选中项
       dateCurrent: 0,
@@ -67,149 +67,170 @@ export default {
           id: 0,
           arrival: 576,
           departure: 542,
-          address: '北仑港口'
+          address: "北仑港口",
         },
         {
           id: 0,
           arrival: 501,
           departure: 507,
-          address: '镇海港口'
+          address: "镇海港口",
         },
         {
           id: 0,
           arrival: 576,
           departure: 542,
-          address: '梅山港口'
+          address: "梅山港口",
         },
         {
           id: 0,
           arrival: 576,
           departure: 542,
-          address: '穿山港口'
-        }
-      ]
-    }
+          address: "穿山港口",
+        },
+      ],
+    };
   },
-  beforeCreate () {
+  beforeCreate() {
     that = this;
   },
-  mounted () {
+  mounted() {
     // 获取人员管控的环状图
-    this.annular()
+    this.annular();
   },
   methods: {
     // 点击切换 日、周、月
-    dateChange (index) {
-      this.dateCurrent = index
+    dateChange(index) {
+      this.dateCurrent = index;
     },
     // 获取人员管控的环状图
-    annular () {
+    annular() {
       // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(this.$refs.annular)
+      let myChart = this.$echarts.init(this.$refs.annular);
       window.onresize = myChart.resize;
       // 环状图的颜色
-      var colorList = ['#7eacea', '#e15777', '#95ea71', '#ea9b4f', '#7577df', '#be72d8', '#fff'];
+      var colorList = [
+        "#7eacea",
+        "#e15777",
+        "#95ea71",
+        "#ea9b4f",
+        "#7577df",
+        "#be72d8",
+        "#fff",
+      ];
       // 绘制图表
       let option = {
         tooltip: {
-          trigger: 'item',
-          formatter: "{b} : {d}% <br/> {c}"
+          trigger: "item",
+          formatter: "{b} : {d}% <br/> {c}",
         },
         graphic: {
-          elements: [{
-            type: 'text',
-            style: {
-              text: '一船一档',
-              width: 200,
-              height: 200,
-              fill: '#97c5f6',
-              fontSize: 16,
-            },
-            left: 'center',
-            top: '40%'
-          },
-          {
-            type: 'text',
-            style: {
-              text: that.annularText,
-              width: 200,
-              height: 200,
-              fill: '#50f4c1',
-              fontSize: 16,
-            },
-            left: 'center',
-            top: '60%'
-          }]
-        },
-        series: [{
-          type: 'pie',
-          radius: [40, 50],
-          center: ['50%', '50%'],
-          // roseType: 'radius',
-          data: [
+          elements: [
             {
-              value: 3735,
-              name: '北仑港口'
+              type: "text",
+              style: {
+                text: "一船一档",
+                width: 200,
+                height: 200,
+                fill: "#97c5f6",
+                fontSize: 16,
+              },
+              left: "center",
+              top: "40%",
             },
             {
-              value: 7843,
-              name: '镇海港口'
-            },
-            {
-              value: 3735,
-              name: '穿山港区'
-            },
-            {
-              value: 7000,
-              name: '梅山港区'
+              type: "text",
+              style: {
+                text: that.annularText,
+                width: 200,
+                height: 200,
+                fill: "#50f4c1",
+                fontSize: 16,
+              },
+              left: "center",
+              top: "60%",
             },
           ],
-          // 设置圆环颜色
-          itemStyle: {
-            normal: {
-              color: function (params) {
-                return colorList[params.dataIndex]
-              }
-            }
-          },
-          labelLine: {
-            normal: {
-              show: true,
-              length: 10,
-              length2: 10,
-              lineStyle: {
-                width: 2
-              }
-            }
-          },
-          label: {
-            normal: {
-              formatter: function (params) {
-                var str = '{c|' + params.data.name + '}' + '{b|\n' + (params.data.value / 175043 * 100).toFixed(2) + '%}' + '{c|\n' + params.data.value + '}';
-                return str;
+        },
+        series: [
+          {
+            type: "pie",
+            radius: [40, 50],
+            center: ["50%", "50%"],
+            // roseType: 'radius',
+            data: [
+              {
+                value: 3735,
+                name: "北仑港口",
               },
-              rich: {
-                c: {
-                  color: '#97c5f6',
-                  fontSize: 12,
-                  align: 'left',
-                  padding: 4
+              {
+                value: 7843,
+                name: "镇海港口",
+              },
+              {
+                value: 3735,
+                name: "穿山港区",
+              },
+              {
+                value: 7000,
+                name: "梅山港区",
+              },
+            ],
+            // 设置圆环颜色
+            itemStyle: {
+              normal: {
+                color: function (params) {
+                  return colorList[params.dataIndex];
                 },
-                b: {
-                  color: '#ffac29',
-                  fontSize: 12,
-                  align: 'left',
-                  padding: 4
-                }
-              }
-            }
-          }
-        }]
+              },
+            },
+            labelLine: {
+              normal: {
+                show: true,
+                length: 10,
+                length2: 10,
+                lineStyle: {
+                  width: 2,
+                },
+              },
+            },
+            label: {
+              normal: {
+                formatter: function (params) {
+                  var str =
+                    "{c|" +
+                    params.data.name +
+                    "}" +
+                    "{b|\n" +
+                    ((params.data.value / 175043) * 100).toFixed(2) +
+                    "%}" +
+                    "{c|\n" +
+                    params.data.value +
+                    "}";
+                  return str;
+                },
+                rich: {
+                  c: {
+                    color: "#97c5f6",
+                    fontSize: 12,
+                    align: "left",
+                    padding: 4,
+                  },
+                  b: {
+                    color: "#ffac29",
+                    fontSize: 12,
+                    align: "left",
+                    padding: 4,
+                  },
+                },
+              },
+            },
+          },
+        ],
       };
       myChart.setOption(option);
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

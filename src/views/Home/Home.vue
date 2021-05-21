@@ -20,11 +20,11 @@
 </template>
 
 <script>
-import earlyWarning from '../components/Home/earlyWarning'
-import goods from '../components/Home/goods'
-import personnel from '../components/Home/personnel'
-import ships from '../components/Home/ships'
-import vehicle from '../components/Home/vehicle'
+import earlyWarning from "./components/earlyWarning";
+import goods from "./components/goods";
+import personnel from "./components/personnel";
+import ships from "./components/ships";
+import vehicle from "./components/vehicle";
 export default {
   components: {
     earlyWarning: earlyWarning,
@@ -33,13 +33,13 @@ export default {
     ships: ships,
     vehicle: vehicle,
   },
-  name: 'Home',
-  mounted () {
+  name: "Home",
+  mounted() {
     document.body.style.backgroundColor = "#020128";
     this.initMap();
   },
   methods: {
-    initMap () {
+    initMap() {
       let map = L.map("map2", {
         minZoom: 3,
         maxZoom: 14,
@@ -47,17 +47,17 @@ export default {
         zoom: 12,
         zoomControl: false,
         attributionControl: false,
-        crs: L.CRS.EPSG3857
+        crs: L.CRS.EPSG3857,
       });
-      console.log('map start')
-      this.map = map;　　　　//data上需要挂载
+      console.log("map start");
+      this.map = map; //data上需要挂载
       window.map = map;
       L.tileLayer(
         "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}"
       ).addTo(map);
-    }
+    },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -103,7 +103,7 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     .box_bgi {
-      background: url("../assets/image/Home/home_bgi.jpg");
+      background: url("../../assets/image/Home/home_bgi.jpg");
       background-size: 100% 100%;
       border-radius: 0.5rem;
       padding: 0.6rem;
