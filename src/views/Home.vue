@@ -92,10 +92,10 @@ export default {
   .box_right {
     width: 25%;
     .vehicle {
-      height: 60%;
+      height: 55%;
     }
     .goods {
-      height: 39%;
+      height: 44%;
     }
   }
   .box_common {

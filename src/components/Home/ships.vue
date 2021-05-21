@@ -113,7 +113,7 @@ export default {
       let option = {
         tooltip: {
           trigger: 'item',
-          // formatter: "{b} : {d}% <br/> {c}"
+          formatter: "{b} : {d}% <br/> {c}"
         },
         graphic: {
           elements: [{
@@ -185,12 +185,18 @@ export default {
           label: {
             normal: {
               formatter: function (params) {
-                var str = '{c|' + params.data.name + '}' + '{c|\n' + '百分比:' + (params.data.value / 175043 * 100).toFixed(2) + '%}' + '{c|\n' + '人数:' + params.data.value + '}';
+                var str = '{c|' + params.data.name + '}' + '{b|\n' + (params.data.value / 175043 * 100).toFixed(2) + '%}' + '{c|\n' + params.data.value + '}';
                 return str;
               },
               rich: {
                 c: {
                   color: '#97c5f6',
+                  fontSize: 12,
+                  align: 'left',
+                  padding: 4
+                },
+                b: {
+                  color: '#ffac29',
                   fontSize: 12,
                   align: 'left',
                   padding: 4
@@ -224,7 +230,8 @@ export default {
         height: 0.6rem;
       }
       > div {
-        font-size: 0.8rem;
+        font-size: 0.65rem;
+        font-weight: bold;
         margin-left: 1rem;
       }
     }

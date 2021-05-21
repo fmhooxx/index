@@ -5,7 +5,7 @@
         <div class="timer">{{timer}}</div>
         <div class="region">宁波市公安局港航分局</div>
       </div>
-      <div class="title_middle">海港卫士</div>
+      <div class="title_middle">数字海港</div>
       <div class="common_title title_right">
         <div class="navigation">
           <div>导航</div>
