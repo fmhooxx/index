@@ -27,9 +27,9 @@ import 'leaflet/dist/leaflet.css'
 import * as L from 'leaflet'
 import 'leaflet.pm'
 import 'leaflet.pm/dist/leaflet.pm.css'
+Vue.L = Vue.prototype.$L = L
 
 Vue.config.productionTip = false;
-Vue.L = Vue.prototype.$L = L
 
 /* leaflet icon */
 delete L.Icon.Default.prototype._getIconUrl

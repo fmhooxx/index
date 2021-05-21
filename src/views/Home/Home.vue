@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     initMap() {
-      let map = L.map("map2", {
+      let map = this.$L.map("map2", {
         minZoom: 3,
         maxZoom: 14,
         center: [39.550339, 116.114129],
@@ -49,12 +49,13 @@ export default {
         attributionControl: false,
         crs: L.CRS.EPSG3857,
       });
-      console.log("map start");
       this.map = map; //data上需要挂载
       window.map = map;
-      L.tileLayer(
-        "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}"
-      ).addTo(map);
+      this.$L
+        .tileLayer(
+          "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}"
+        )
+        .addTo(map);
     },
   },
 };

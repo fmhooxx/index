@@ -215,7 +215,7 @@ export default {
                 fontSize: 16,
               },
               left: "center",
-              top: "45%",
+              top: "40%",
             },
             {
               type: "text",
