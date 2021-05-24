@@ -2,15 +2,23 @@
   <div>
     <div class="title">
       <div class="common_title title_left">
-        <div class="timer">{{timer}}</div>
+        <div class="timer">{{ timer }}</div>
         <div class="region">宁波市公安局港航分局</div>
       </div>
       <div class="title_middle">数字海港</div>
       <div class="common_title title_right">
         <div class="navigation">
-          <div>导航</div>
+          <!-- <div>导航</div>
           <svg-icon class="xiala"
-                    icon-class="xiala"></svg-icon>
+                    icon-class="xiala"></svg-icon> -->
+          <el-dropdown @command="handleCommand" trigger="click">
+            <span class="el-dropdown-link">
+              导航<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="a">测试链接</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
         <div class="address">浙江省宁波市</div>
       </div>
@@ -20,24 +28,28 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       // 当前的日期
-      timer: ''
-    }
+      timer: "",
+    };
   },
-  created () {
-    this.getNewTime()
+  created() {
+    this.getNewTime();
   },
-  mounted () {
+  mounted() {
     document.body.style.backgroundColor = "#020128";
   },
   methods: {
-    getNewTime () {
-      this.timer = this.$until.getTime()
-    }
+    handleCommand(item) {
+      window.open("https://www.baidu.com/");
+    },
+    // 获取当前的日期
+    getNewTime() {
+      this.timer = this.$until.getTime();
+    },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -89,6 +101,10 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+      /deep/.el-dropdown {
+        cursor: pointer;
+        color: #fff;
+      }
       > div {
         margin-right: 0.1rem;
       }
