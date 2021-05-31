@@ -2,14 +2,14 @@
   <div>
     <div class="box">
       <div class="box_title">
-        <img src="../../../assets/image/Home/right_arrow.png"
-             alt="车辆管控">
-        <div>车辆管控</div>
+        <commonTopText :commonTopText="'车辆管控'"></commonTopText>
       </div>
       <div class="content">
         <div>
-          <div ref="annular"
-               :style="{height: 100 + '%',width: 100 + '%'}"></div>
+          <div
+            ref="annular"
+            :style="{ height: 100 + '%', width: 100 + '%' }"
+          ></div>
         </div>
         <div>
           <div class="area_title">
@@ -18,14 +18,23 @@
               <div>车辆进出分析</div>
             </div>
             <div class="area_title_right">
-              <div @click="dateChange(index)"
-                   :class="[index == 1 ? 'area_title_right_tow':'', index == dateCurrent ? 'activeDate':'']"
-                   v-for="(item, index) in date"
-                   :key="index">{{item.text}}</div>
+              <div
+                @click="dateChange(index)"
+                :class="[
+                  index == 1 ? 'area_title_right_tow' : '',
+                  index == dateCurrent ? 'activeDate' : '',
+                ]"
+                v-for="(item, index) in date"
+                :key="index"
+              >
+                {{ item.text }}
+              </div>
             </div>
           </div>
-          <div ref="vehicle"
-               :style="{height: 100 + '%',width: 100 + '%'}">111</div>
+          <div
+            ref="vehicle"
+            :style="{ height: 100 + '%', width: 100 + '%' }"
+          ></div>
         </div>
       </div>
     </div>

@@ -3,34 +3,39 @@
     <div class="box">
       <div class="box_title">
         <div class="box_title_left">
-          <img src="../../../assets/image/Home/right_arrow.png"
-               alt="船只管控">
-          <div>船只管控</div>
+          <commonTopText :commonTopText="'船只管控'"></commonTopText>
         </div>
         <div class="box_title_right">
-          <div @click="dateChange(index)"
-               :class="[index == 1 ? 'area_title_right_tow':'', index == dateCurrent ? 'activeDate':'']"
-               v-for="(item, index) in date"
-               :key="index">{{item.text}}</div>
+          <div
+            @click="dateChange(index)"
+            :class="[
+              index == 1 ? 'area_title_right_tow' : '',
+              index == dateCurrent ? 'activeDate' : '',
+            ]"
+            v-for="(item, index) in date"
+            :key="index"
+          >
+            {{ item.text }}
+          </div>
         </div>
       </div>
       <div class="annular_box">
-        <div ref="annular"
-             :style="{height: 100 + '%',width: 100 + '%'}"></div>
+        <div
+          ref="annular"
+          :style="{ height: 100 + '%', width: 100 + '%' }"
+        ></div>
       </div>
       <div class="box_list">
-        <div class="box_list_item"
-             v-for="(item, index) in list"
-             :key="index">
+        <div class="box_list_item" v-for="(item, index) in list" :key="index">
           <div class="box_list_item_ships">
             <div>抵港船只</div>
-            <div class="yellow">{{item.arrival}}</div>
+            <div class="yellow">{{ item.arrival }}</div>
           </div>
           <div class="box_list_item_ships">
             <div>离港船只</div>
-            <div class="red">{{item.departure}}</div>
+            <div class="red">{{ item.departure }}</div>
           </div>
-          <div class="box_list_item_bottom">{{item.address}}</div>
+          <div class="box_list_item_bottom">{{ item.address }}</div>
         </div>
       </div>
     </div>

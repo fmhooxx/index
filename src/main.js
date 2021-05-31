@@ -10,6 +10,10 @@ Vue.prototype.$echarts = echarts
 // 全局的头部组件
 import commonTitle from './components/common/commonTitle.vue'
 Vue.component("commonTitle", commonTitle)
+// 全局的二级标题组件
+import commonTopText from './components/common/commonTopText.vue'
+Vue.component("commonTopText", commonTopText)
+
 
 
 import './util/rem'

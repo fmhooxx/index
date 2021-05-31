@@ -2,23 +2,27 @@
   <div>
     <div class="box">
       <div class="box_title">
-        <img src="../../../assets/image/Home/right_arrow.png"
-             alt="货物管控" />
-        <div>货物管控</div>
+        <commonTopText :commonTopText="'货物管控'"></commonTopText>
       </div>
       <div class="content">
         <div class="bot_top">
-          <div ref="goods"
-               :style="{ height: 100 + '%', width: 100 + '%' }"></div>
+          <div
+            ref="goods"
+            :style="{ height: 100 + '%', width: 100 + '%' }"
+          ></div>
         </div>
         <div class="bot_bottom">
           <div>
-            <div ref="annularLeft"
-                 :style="{ height: 100 + '%', width: 100 + '%' }"></div>
+            <div
+              ref="annularLeft"
+              :style="{ height: 100 + '%', width: 100 + '%' }"
+            ></div>
           </div>
           <div>
-            <div ref="annularRight"
-                 :style="{ height: 100 + '%', width: 100 + '%' }"></div>
+            <div
+              ref="annularRight"
+              :style="{ height: 100 + '%', width: 100 + '%' }"
+            ></div>
           </div>
         </div>
       </div>

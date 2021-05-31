@@ -3,18 +3,18 @@
     <div class="box">
       <div class="box_title">
         <div class="box_title_left">
-          <img src="../../../assets/image/Home/right_arrow.png"
-               alt="预警中心" />
-          <div>预警中心</div>
+          <commonTopText :commonTopText="'预警中心'"></commonTopText>
         </div>
         <div class="box_title_right">
-          <div @click="dateChange(index)"
-               :class="[
+          <div
+            @click="dateChange(index)"
+            :class="[
               index == 1 ? 'area_title_right_tow' : '',
               index == dateCurrent ? 'activeDate' : '',
             ]"
-               v-for="(item, index) in date"
-               :key="index">
+            v-for="(item, index) in date"
+            :key="index"
+          >
             {{ item.text }}
           </div>
         </div>
@@ -34,10 +34,14 @@
         </div>
       </div>
       <div class="annular_box">
-        <div ref="annularLeft"
-             :style="{ height: 100 + '%', width: 100 + '%' }"></div>
-        <div ref="annularRight"
-             :style="{ height: 100 + '%', width: 100 + '%' }"></div>
+        <div
+          ref="annularLeft"
+          :style="{ height: 100 + '%', width: 100 + '%' }"
+        ></div>
+        <div
+          ref="annularRight"
+          :style="{ height: 100 + '%', width: 100 + '%' }"
+        ></div>
       </div>
     </div>
   </div>

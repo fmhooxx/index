@@ -1,13 +1,13 @@
 <template>
   <div class="box">
     <div>
-      <div class="box_title">
-        <img src="../../../assets/image/Home/right_arrow.png"
-             alt="人员管控" />
-        <div>人员管控</div>
+      <div class="box_title" @click="jump">
+        <commonTopText
+          ref="commonTopText"
+          :commonTopText="'人员管控'"
+        ></commonTopText>
       </div>
-      <div ref="annular"
-           :style="{ height: 87 + '%', width: 100 + '%' }"></div>
+      <div ref="annular" :style="{ height: 87 + '%', width: 100 + '%' }"></div>
     </div>
     <div>
       <div class="area_title">
@@ -16,19 +16,20 @@
           <div>港区人员进出分析</div>
         </div>
         <div class="area_title_right">
-          <div @click="dateChange(index)"
-               :class="[
+          <div
+            @click="dateChange(index)"
+            :class="[
               index == 1 ? 'area_title_right_tow' : '',
               index == dateCurrent ? 'activeDate' : '',
             ]"
-               v-for="(item, index) in date"
-               :key="index">
+            v-for="(item, index) in date"
+            :key="index"
+          >
             {{ item.text }}
           </div>
         </div>
       </div>
-      <div ref="area"
-           :style="{ height: 80 + '%', width: 100 + '%' }">33</div>
+      <div ref="area" :style="{ height: 80 + '%', width: 100 + '%' }">33</div>
     </div>
   </div>
 </template>
@@ -69,6 +70,10 @@ export default {
     this.getArea();
   },
   methods: {
+    // 跳转页面
+    jump() {
+      this.$refs.commonTopText.goUrl("/personnel");
+    },
     // 点击切换 日、周、月
     dateChange(index) {
       this.dateCurrent = index;
