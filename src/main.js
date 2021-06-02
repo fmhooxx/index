@@ -14,10 +14,11 @@ Vue.component("commonTitle", commonTitle)
 import commonTopText from './components/common/commonTopText.vue'
 Vue.component("commonTopText", commonTopText)
 
+import axios from 'axios'
+Vue.prototype.$http = axios;
 
-
-import './util/rem'
-import until from './util/until'
+import './utils/rem'
+import until from './utils/until'
 Vue.prototype.$until = until
 
 import Element from 'element-ui'

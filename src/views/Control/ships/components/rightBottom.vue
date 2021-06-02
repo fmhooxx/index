@@ -2,25 +2,22 @@
   <div>
     <div class="box">
       <div class="box_title">
-        <div class="box_title_left" @click="jump">
-          <commonTopText
-            ref="commonTopText"
-            :flag="true"
-            :commonTopText="'船只管控'"
-          ></commonTopText>
+        <div class="box_title_left">
+          <img
+            src="@/assets/image/Home/right_arrow.png"
+            alt="船只违法行为管控"
+          />
+          <div>船只违法行为管控</div>
         </div>
-        <div class="box_title_right">
-          <div
-            @click="dateChange(index)"
-            :class="[
-              index == 1 ? 'area_title_right_tow' : '',
-              index == dateCurrent ? 'activeDate' : '',
-            ]"
-            v-for="(item, index) in date"
-            :key="index"
-          >
-            {{ item.text }}
-          </div>
+      </div>
+      <div class="top_box">
+        <div ref="top" :style="{ height: 100 + '%', width: 100 + '%' }"></div>
+      </div>
+
+      <div class="area_title">
+        <div class="area_title_left">
+          <span></span>
+          <div>船只违规行为比例</div>
         </div>
       </div>
       <div class="annular_box">
@@ -28,19 +25,6 @@
           ref="annular"
           :style="{ height: 100 + '%', width: 100 + '%' }"
         ></div>
-      </div>
-      <div class="box_list">
-        <div class="box_list_item" v-for="(item, index) in list" :key="index">
-          <div class="box_list_item_ships">
-            <div>抵港船只</div>
-            <div class="yellow">{{ item.arrival }}</div>
-          </div>
-          <div class="box_list_item_ships">
-            <div>离港船只</div>
-            <div class="red">{{ item.departure }}</div>
-          </div>
-          <div class="box_list_item_bottom">{{ item.address }}</div>
-        </div>
       </div>
     </div>
   </div>
@@ -51,71 +35,98 @@ let that = "";
 export default {
   data() {
     return {
-      // 圆环图中间文字
-      annularText: 40,
-      // 日、周、月
-      date: [
-        {
-          id: 0,
-          text: "日",
-        },
-        {
-          id: 1,
-          text: "周",
-        },
-        {
-          id: 2,
-          text: "月",
-        },
-      ],
-      // 日、周、月 当前选中项
-      dateCurrent: 0,
       // 船只数据列表
-      list: [
-        {
-          id: 0,
-          arrival: 576,
-          departure: 542,
-          address: "北仑港口",
-        },
-        {
-          id: 0,
-          arrival: 501,
-          departure: 507,
-          address: "镇海港口",
-        },
-        {
-          id: 0,
-          arrival: 576,
-          departure: 542,
-          address: "梅山港口",
-        },
-        {
-          id: 0,
-          arrival: 576,
-          departure: 542,
-          address: "穿山港口",
-        },
-      ],
     };
   },
   beforeCreate() {
     that = this;
   },
   mounted() {
-    // 获取人员管控的环状图
+    // 获取车辆管控的环状图
     this.annular();
+    this.top();
   },
   methods: {
-    // 跳转页面
-    jump() {
-      this.$refs.commonTopText.goUrl("/ships");
-    },
     // 点击切换 日、周、月
     dateChange(index) {
       this.dateCurrent = index;
     },
     // 获取人员管控的环状图
+    top() {
+      let myChart = this.$echarts.init(this.$refs.top);
+      window.onresize = myChart.resize;
+      let option = {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "cross",
+            crossStyle: {
+              color: "#999",
+            },
+          },
+        },
+        grid: {
+          top: "10%",
+          left: "0%",
+          right: "0%",
+          bottom: "10%",
+          containLabel: true,
+        },
+        xAxis: [
+          {
+            type: "category",
+            data: ["穿山", "梅山", "北仑", "镇海"],
+            axisPointer: {
+              type: "shadow",
+            },
+            axisLine: {
+              lineStyle: {
+                type: "solid",
+                color: "#74acef", //左边线的颜色
+                width: "2", //坐标线的宽度
+              },
+            },
+          },
+        ],
+        yAxis: [
+          {
+            type: "value",
+            min: 0,
+            // axisLabel: {
+            //   formatter: '{value} °C',
+            // },
+            axisLine: {
+              lineStyle: {
+                type: "solid",
+                color: "#74acef", //左边线的颜色
+                width: "2", //坐标线的宽度
+              },
+            },
+            splitLine: {
+              show: true,
+            },
+          },
+        ],
+        series: [
+          {
+            name: "违法船只",
+            type: "bar",
+            data: [9900, 5000, 9900, 5000],
+            barWidth: 20,
+            itemStyle: {
+              normal: {
+                color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: "#142949" }, //柱图渐变色
+                  { offset: 0.5, color: "#0b6e94" }, //柱图渐变色
+                  { offset: 1, color: "#01b2df" }, //柱图渐变色
+                ]),
+              },
+            },
+          },
+        ],
+      };
+      myChart.setOption(option);
+    },
     annular() {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(this.$refs.annular);
@@ -136,56 +147,29 @@ export default {
           trigger: "item",
           formatter: "{b} : {d}% <br/> {c}",
         },
-        graphic: {
-          elements: [
-            {
-              type: "text",
-              style: {
-                text: "一船一档",
-                width: 200,
-                height: 200,
-                fill: "#97c5f6",
-                fontSize: 16,
-              },
-              left: "center",
-              top: "40%",
-            },
-            {
-              type: "text",
-              style: {
-                text: that.annularText,
-                width: 200,
-                height: 200,
-                fill: "#50f4c1",
-                fontSize: 16,
-              },
-              left: "center",
-              top: "60%",
-            },
-          ],
-        },
         series: [
           {
             type: "pie",
-            radius: [40, 50],
+            radius: "70%",
+            roseType: "radius",
             center: ["50%", "50%"],
             // roseType: 'radius',
             data: [
               {
-                value: 3735,
-                name: "北仑港口",
+                value: 2500,
+                name: "其他",
               },
               {
-                value: 7843,
-                name: "镇海港口",
+                value: 2000,
+                name: "违法停靠船",
               },
               {
-                value: 3735,
-                name: "穿山港区",
+                value: 3000,
+                name: "偷渡船",
               },
               {
-                value: 7000,
-                name: "梅山港区",
+                value: 2500,
+                name: "走私船",
               },
             ],
             // 设置圆环颜色
@@ -214,7 +198,7 @@ export default {
                     params.data.name +
                     "}" +
                     "{b|\n" +
-                    ((params.data.value / 175043) * 100).toFixed(2) +
+                    ((params.data.value / 10000) * 100).toFixed(2) +
                     "%}" +
                     "{c|\n" +
                     params.data.value +
@@ -295,42 +279,40 @@ export default {
       background-color: #0f3a64;
     }
   }
-  .annular_box {
-    height: 50%;
+  .annular {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .box_list {
+  .area_title {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    .box_list_item {
+    font-size: 0.14rem;
+    color: #50f4c1;
+    margin-bottom: 0.3rem;
+    .area_title_left {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      border: 0.01rem solid #2f91b4;
-      font-size: 0.12rem;
-      width: 23%;
-      border-radius: 10%;
-      text-align: center;
-      overflow: hidden;
-      background-color: rgba(47, 145, 180, 0.2);
-      .box_list_item_ships {
-        padding: 0.2rem 0;
-        color: #2f91b4;
-        .yellow {
-          color: #d09131;
-        }
-        .red {
-          color: #fb2831;
-        }
-      }
-      .box_list_item_bottom {
-        color: #dde9ed;
-        background-color: #147ba6;
-        width: 100%;
-        padding: 0.2rem 0.4rem;
-        border-radius: 0 0 10% 10%;
+      height: 100%;
+      > span {
+        width: 0.1rem;
+        height: 0.4rem;
+        background-color: #50f4c1;
+        margin-right: 0.4rem;
       }
     }
+  }
+  .annular_box {
+    height: 50%;
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .top_box {
+    height: 50%;
   }
 }
 </style>

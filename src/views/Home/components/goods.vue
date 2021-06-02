@@ -1,8 +1,12 @@
 <template>
   <div>
     <div class="box">
-      <div class="box_title">
-        <commonTopText :commonTopText="'货物管控'"></commonTopText>
+      <div class="box_title" @click="jump">
+        <commonTopText
+          ref="commonTopText"
+          :flag="true"
+          :commonTopText="'货物管控'"
+        ></commonTopText>
       </div>
       <div class="content">
         <div class="bot_top">
@@ -51,6 +55,9 @@ export default {
     this.annularRight();
   },
   methods: {
+    jump() {
+      this.$refs.commonTopText.goUrl("/goods");
+    },
     annularLeft() {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(this.$refs.annularLeft);

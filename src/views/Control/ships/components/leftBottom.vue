@@ -2,48 +2,29 @@
   <div>
     <div class="box">
       <div class="box_title">
-        <div class="box_title_left" @click="jump">
-          <commonTopText
-            :flag="true"
-            ref="commonTopText"
-            :commonTopText="'预警中心'"
-          ></commonTopText>
+        <div class="box_title_left">
+          <img
+            src="@/assets/image/Home/right_arrow.png"
+            alt="外籍船员入甬管理"
+          />
+          <div>重点船只管控</div>
         </div>
-        <div class="box_title_right">
-          <div
-            @click="dateChange(index)"
-            :class="[
-              index == 1 ? 'area_title_right_tow' : '',
-              index == dateCurrent ? 'activeDate' : '',
-            ]"
-            v-for="(item, index) in date"
-            :key="index"
-          >
-            {{ item.text }}
+      </div>
+      <div class="box_top">
+        <div class="box_top_item" v-for="(item, index) in top" :key="index">
+          <div class="box_top_item_left">
+            {{ item.aleft }}
+            <div class="lv">{{ item.aright }}</div>
           </div>
         </div>
       </div>
-      <div class="box_text">
-        <div>
-          <div>预警总数</div>
-          <span class="yellow">1624</span>
-        </div>
-        <div>
-          <div>已处理</div>
-          <span class="green">1524</span>
-        </div>
-        <div>
-          <div>未处理</div>
-          <span class="red">100</span>
-        </div>
+      <div class="top_box">
+        <div ref="atop" :style="{ height: 100 + '%', width: 100 + '%' }"></div>
       </div>
+
       <div class="annular_box">
         <div
-          ref="annularLeft"
-          :style="{ height: 100 + '%', width: 100 + '%' }"
-        ></div>
-        <div
-          ref="annularRight"
+          ref="annular"
           :style="{ height: 100 + '%', width: 100 + '%' }"
         ></div>
       </div>
@@ -55,50 +36,25 @@
 let that = "";
 export default {
   data() {
-    return {
-      // 日、周、月
-      date: [
-        {
-          id: 0,
-          text: "日",
-        },
-        {
-          id: 1,
-          text: "周",
-        },
-        {
-          id: 2,
-          text: "月",
-        },
-      ],
-      // 日、周、月 当前选中项
-      dateCurrent: 0,
-      // 圆环图中间文字
-      annularText: 40,
-    };
+    return {};
   },
   beforeCreate() {
     that = this;
   },
   mounted() {
-    // 获取左边的环状图
-    this.annularLeft();
-    // 获取右边的环状图
-    this.annularRight();
+    // 获取车辆管控的环状图
+    this.annular();
+    this.atop();
   },
   methods: {
-    // 跳转页面
-    jump() {
-      this.$refs.commonTopText.goUrl("/earlyWarning");
-    },
     // 点击切换 日、周、月
     dateChange(index) {
       this.dateCurrent = index;
     },
-    // 获取左边的环状图
-    annularLeft() {
+    // 获取人员管控的环状图
+    annular() {
       // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(this.$refs.annularLeft);
+      let myChart = this.$echarts.init(this.$refs.annular);
       window.onresize = myChart.resize;
       // 环状图的颜色
       var colorList = [
@@ -116,28 +72,68 @@ export default {
           trigger: "item",
           formatter: "{b} : {d}% <br/> {c}",
         },
+        graphic: {
+          elements: [
+            {
+              type: "text",
+              style: {
+                text: "布控统计",
+                width: 200,
+                height: 200,
+                fill: "#97c5f6",
+                fontSize: 12,
+              },
+              left: "23%",
+              top: "50%",
+            },
+          ],
+        },
+        legend: {
+          x: "46%",
+          y: "28%",
+          textStyle: {
+            color: "#039dc6",
+          },
+          right: 0,
+          top: 0,
+          orient: "vertical",
+          data: ["走私船", "偷渡船", "违法停靠船", "其他"],
+          formatter: function (name) {
+            var data = option.series[0].data; //获取series中的data
+            var total = 0;
+            var tarValue;
+            for (var i = 0, l = data.length; i < l; i++) {
+              total += data[i].value;
+              if (data[i].name == name) {
+                tarValue = data[i].value;
+              }
+            }
+            var p = (tarValue / total) * 100;
+            return name + " " + " " + p.toFixed(2) + "%" + " " + tarValue;
+          },
+        },
         series: [
           {
             type: "pie",
-            // radius: [40, 50],
-            center: ["50%", "50%"],
-            roseType: "radius",
+            radius: [30, 50],
+            center: ["30%", "50%"],
+            // roseType: 'radius',
             data: [
               {
-                value: 3735,
-                name: "北仑港口",
+                value: 150,
+                name: "走私船",
               },
               {
-                value: 7843,
-                name: "镇海港口",
+                value: 150,
+                name: "偷渡船",
               },
               {
-                value: 3735,
-                name: "穿山港区",
+                value: 200,
+                name: "违法停靠船",
               },
               {
-                value: 7000,
-                name: "梅山港区",
+                value: 600,
+                name: "其他",
               },
             ],
             // 设置圆环颜色
@@ -150,7 +146,7 @@ export default {
             },
             labelLine: {
               normal: {
-                show: true,
+                show: false,
                 length: 10,
                 length2: 10,
                 lineStyle: {
@@ -160,13 +156,14 @@ export default {
             },
             label: {
               normal: {
+                show: false,
                 formatter: function (params) {
                   var str =
                     "{c|" +
                     params.data.name +
                     "}" +
                     "{b|\n" +
-                    ((params.data.value / 175043) * 100).toFixed(2) +
+                    ((params.data.value / 1100) * 100).toFixed(2) +
                     "%}" +
                     "{c|\n" +
                     params.data.value +
@@ -194,10 +191,9 @@ export default {
       };
       myChart.setOption(option);
     },
-    // 获取右边的环状图
-    annularRight() {
+    atop() {
       // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(this.$refs.annularRight);
+      let myChart = this.$echarts.init(this.$refs.atop);
       window.onresize = myChart.resize;
       // 环状图的颜色
       var colorList = [
@@ -220,51 +216,63 @@ export default {
             {
               type: "text",
               style: {
-                text: "一船一档",
+                text: "布控统计",
                 width: 200,
                 height: 200,
                 fill: "#97c5f6",
-                fontSize: 16,
+                fontSize: 12,
               },
-              left: "center",
-              top: "40%",
-            },
-            {
-              type: "text",
-              style: {
-                text: that.annularText,
-                width: 200,
-                height: 200,
-                fill: "#50f4c1",
-                fontSize: 16,
-              },
-              left: "center",
-              top: "55%",
+              left: "23%",
+              top: "50%",
             },
           ],
+        },
+        legend: {
+          x: "46%",
+          y: "28%",
+          textStyle: {
+            color: "#039dc6",
+          },
+          right: 0,
+          top: 0,
+          orient: "vertical",
+          data: ["穿山港区", "梅山港区", "北仑港区", "镇海港区"],
+          formatter: function (name) {
+            var data = option.series[0].data; //获取series中的data
+            var total = 0;
+            var tarValue;
+            for (var i = 0, l = data.length; i < l; i++) {
+              total += data[i].value;
+              if (data[i].name == name) {
+                tarValue = data[i].value;
+              }
+            }
+            var p = (tarValue / total) * 100;
+            return name + " " + " " + p.toFixed(2) + "%" + " " + tarValue;
+          },
         },
         series: [
           {
             type: "pie",
-            radius: [40, 50],
-            center: ["50%", "50%"],
+            radius: [30, 50],
+            center: ["30%", "50%"],
             // roseType: 'radius',
             data: [
               {
-                value: 3735,
-                name: "北仑港口",
-              },
-              {
-                value: 7843,
-                name: "镇海港口",
-              },
-              {
-                value: 3735,
+                value: 150,
                 name: "穿山港区",
               },
               {
-                value: 7000,
+                value: 150,
                 name: "梅山港区",
+              },
+              {
+                value: 200,
+                name: "北仑港区",
+              },
+              {
+                value: 600,
+                name: "镇海港区",
               },
             ],
             // 设置圆环颜色
@@ -277,7 +285,7 @@ export default {
             },
             labelLine: {
               normal: {
-                show: true,
+                show: false,
                 length: 10,
                 length2: 10,
                 lineStyle: {
@@ -287,13 +295,14 @@ export default {
             },
             label: {
               normal: {
+                show: false,
                 formatter: function (params) {
                   var str =
                     "{c|" +
                     params.data.name +
                     "}" +
                     "{b|\n" +
-                    ((params.data.value / 175043) * 100).toFixed(2) +
+                    ((params.data.value / 1100) * 100).toFixed(2) +
                     "%}" +
                     "{c|\n" +
                     params.data.value +
@@ -328,6 +337,9 @@ export default {
 <style lang="less" scoped>
 .box {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   .box_title {
     display: flex;
     align-items: center;
@@ -346,7 +358,6 @@ export default {
       }
     }
     .box_title_right {
-      margin-right: 0.3rem;
       font-size: 0.14rem;
       display: flex;
       align-items: center;
@@ -372,37 +383,83 @@ export default {
       background-color: #0f3a64;
     }
   }
-  .box_text {
+  .annular {
     display: flex;
     align-items: center;
-    margin: 0.6rem 0 0 1rem;
-    > div {
+    justify-content: center;
+  }
+  .area_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.14rem;
+    color: #50f4c1;
+    margin-bottom: 0.3rem;
+    .area_title_left {
       display: flex;
       align-items: center;
-      font-size: 0.5rem;
-      color: #2f91b4;
-      margin-right: 1rem;
-      > div {
-        margin-right: 1rem;
-      }
-      .yellow {
-        color: #f09101;
-      }
-      .green {
-        color: #01e9be;
-      }
-      .red {
-        color: #f40001;
+      height: 100%;
+      > span {
+        width: 0.1rem;
+        height: 0.4rem;
+        background-color: #50f4c1;
+        margin-right: 0.4rem;
       }
     }
   }
   .annular_box {
+    height: 50%;
+  }
+  .box_top {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  .box_top_item {
+    align-items: center;
+    font-size: 0.4rem;
+    width: 100%;
+    text-align: right;
+    line-height: 50%;
+    font-size: 0.5rem;
+    float: right;
+  }
+  .box_top_item_left {
+    color: #039dc6;
+    .lv {
+      color: #03f53f;
+      float: right;
+      font-size: 0.8rem;
+    }
+  }
+  .box_list {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 70%;
-    width: 100%;
-    margin-top: 0.6rem;
+    .box_list_item {
+      align-items: center;
+      border: 0.01rem solid #2f91b4;
+      font-size: 0.6rem;
+      width: 23%;
+      height: 2.5rem;
+      border-radius: 10%;
+      text-align: center;
+      overflow: hidden;
+      background-color: rgba(47, 145, 180, 0.2);
+      .box_list_item_ships {
+        padding: 0.2rem 0;
+        color: #2f91b4;
+        .red {
+          color: #50f4c1;
+        }
+      }
+      .box_list_item_bottom {
+        color: #50f4c1;
+        width: 100%;
+        padding: 0.2rem 0.4rem;
+        border-radius: 0 0 10% 10%;
+      }
+    }
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <div class="common_box">
+    <div class="common_box" :class="flag ? 'common_flag' : ''">
       <slot name="commonTopImg">
         <img src="@/assets/image/Home/right_arrow.png" alt="" />
       </slot>
@@ -16,6 +16,15 @@ export default {
       type: String,
       required: true,
     },
+    flag: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  created() {
+    console.log(this.flag);
+    if (this.flag) {
+    }
   },
   methods: {
     goUrl(url) {
@@ -32,7 +41,6 @@ export default {
     width: 100%;
     display: flex;
     align-items: center;
-    cursor: pointer;
     > img {
       height: 0.6rem;
       width: 1rem;
@@ -42,6 +50,9 @@ export default {
       font-weight: bold;
       margin-left: 1rem;
     }
+  }
+  .common_flag {
+    cursor: pointer;
   }
 }
 </style>

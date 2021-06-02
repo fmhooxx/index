@@ -1,7 +1,5 @@
 <template>
-  <div id="app" :style="{ height: windowHeight + 'px' }">
-    <router-view :style="{ height: windowHeight + 'px' }" />
-  </div>
+  <div class="earlyWarning_box"></div>
 </template>
 
 <script>
@@ -32,9 +30,12 @@ export default {
 };
 </script>
 
-<style lang="less">
-#app {
+<style lang="less" scoped>
+.earlyWarning_box {
+  position: fixed;
+  width: 100%;
   height: 100%;
+  background: url("../../../assets/image/Control/goods.png");
+  background-size: 100% 100%;
 }
-@import url("./assets/css/style.css");
 </style>

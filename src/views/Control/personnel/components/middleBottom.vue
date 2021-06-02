@@ -1,7 +1,11 @@
 <template>
   <div class="middle_bottom_box">
-    <div class="box_title">
-      <commonTopText :commonTopText="'人员进出统计'"></commonTopText>
+    <div class="box_title" @click="jump">
+      <commonTopText
+        ref="commonTopText"
+        :flag="true"
+        :commonTopText="'人员进出统计'"
+      ></commonTopText>
     </div>
     <div class="content">
       <div>
@@ -35,12 +39,16 @@ export default {
   mounted() {
     // 获取人员进出统计柱状图
     this.getPeopel();
-    // 获取底部右侧的环状图
+    // 获取底部左侧的环状图
     this.getPeopleLeft();
-    // 获取底部左侧的柱状图
+    // 获取底部右侧的环状图
     this.getPeopleRight();
   },
   methods: {
+    // 跳转页面
+    jump() {
+      this.$refs.commonTopText.goUrl("/peopleOutDetails");
+    },
     // 获取人员进出统计柱状图
     getPeopel() {
       let myChart = this.$echarts.init(this.$refs.content_top);
@@ -143,7 +151,7 @@ export default {
       };
       myChart.setOption(option);
     },
-    // 获取底部右侧的环状图
+    // 获取底部右侧的柱状图
     getPeopleLeft() {
       let myChart = this.$echarts.init(this.$refs.content_bottom_box_left);
       window.onresize = myChart.resize;
@@ -230,7 +238,7 @@ export default {
       };
       myChart.setOption(option);
     },
-    // 获取底部左侧的柱状图
+    // 获取底部右侧的环状图
     getPeopleRight() {
       let myChart = this.$echarts.init(this.$refs.content_bottom_box_right);
       let data = [
@@ -242,7 +250,14 @@ export default {
         { value: 200, name: "韩国" },
       ];
       window.onresize = myChart.resize;
-      var colorList = ["#0063ce", "#bf58ff", "#00d2f3", "##00e321"];
+      var colorList = [
+        "#f8b58a",
+        "#f888b0",
+        "#8999f8",
+        "#89d1f9",
+        "#f7f188",
+        "#f9da88",
+      ];
       // 绘制图表
       let option = {
         tooltip: {
@@ -290,7 +305,6 @@ export default {
         },
         series: [
           {
-            name: "访问来源",
             type: "pie",
             radius: [40, 60],
             center: ["30%", "50%"],
@@ -303,6 +317,14 @@ export default {
               show: false,
             },
             data: data,
+            // 设置圆环颜色
+            itemStyle: {
+              normal: {
+                color: function (params) {
+                  return colorList[params.dataIndex];
+                },
+              },
+            },
           },
         ],
       };
@@ -315,6 +337,7 @@ export default {
 <style lang="less" scoped>
 .middle_bottom_box {
   .box_title {
+    width: 22%;
     color: #50f4c1;
   }
   .content {

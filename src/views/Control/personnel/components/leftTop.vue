@@ -64,9 +64,7 @@ export default {
   methods: {
     // 点击 list 切换显示
     currentChange(index) {
-      console.log(1111);
       this.current = index;
-      console.log(this.current);
     },
     // 获取柱状图数据
     getHistogram() {

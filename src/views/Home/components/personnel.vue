@@ -4,6 +4,7 @@
       <div class="box_title" @click="jump">
         <commonTopText
           ref="commonTopText"
+          :flag="true"
           :commonTopText="'人员管控'"
         ></commonTopText>
       </div>
