@@ -72,7 +72,7 @@ export default {
         attributionControl: false,
         crs: L.CRS.EPSG3857,
       });
-      this.map = map; //data上需要挂载
+      this.map = map;
       window.map = map;
       this.$L
         .tileLayer(
