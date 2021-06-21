@@ -1,7 +1,7 @@
 <template>
   <div class="left_Bottom_box">
     <div class="box_title">
-      <commonTopText :commonTopText="'重点船只管控'"></commonTopText>
+      <commonTopText :commonTopText="'重点人员管控'"></commonTopText>
     </div>
     <div class="content">
       <div>
@@ -44,19 +44,19 @@ export default {
       let data = [
         {
           value: 3735,
-          name: "穿山港区",
-        },
-        {
-          value: 7000,
-          name: "梅山港区",
-        },
-        {
-          value: 3735,
           name: "北仑港口",
         },
         {
           value: 7843,
           name: "镇海港口",
+        },
+        {
+          value: 3735,
+          name: "穿山港区",
+        },
+        {
+          value: 7000,
+          name: "梅山港区",
         },
       ];
       let total = 0;
@@ -171,19 +171,19 @@ export default {
     getContentBottom() {
       let myChart = this.$echarts.init(this.$refs.content_bottom);
       window.onresize = myChart.resize;
-      var colorList = ["#006cff", "#003fff", "#00fee9", "#0096ff"];
+      var colorList = ["#ff0000", "#0076ff", "#ff8800", "#00c48c"];
       let data = [
         {
           value: 150,
-          name: "走私船",
+          name: "易燃易爆",
         },
         {
           value: 150,
-          name: "偷渡船",
+          name: "毒害品",
         },
         {
           value: 200,
-          name: "违法停靠船",
+          name: "放射性物品",
         },
         {
           value: 600,

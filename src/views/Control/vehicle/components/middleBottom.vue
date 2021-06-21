@@ -2,49 +2,44 @@
   <div>
     <div class="box">
       <div class="box_title">
-        <img src="@/assets/image/Home/right_arrow.png" alt="车辆进出分析" />
-        <div>车辆进出分析</div>
-        <div class="box_title_right">
+        <commonTopText :commonTopText="'车辆到港分析'"></commonTopText>
+      </div>
+      <div class="content">
+        <div class="content_title">
           <div
-            @click="dateChange(index)"
-            :class="[
-              index == 1 ? 'area_title_right_tow' : '',
-              index == dateCurrent ? 'activeDate' : '',
-            ]"
-            v-for="(item, index) in date"
+            class="content_title_list"
+            v-for="(item, index) in tabList"
             :key="index"
           >
             {{ item.text }}
           </div>
         </div>
-      </div>
-
-      <div class="content">
-        <div>
-          <div
-            ref="vehicle"
-            :style="{ height: 100 + '%', width: 100 + '%' }"
-          ></div>
-        </div>
-        <div>
-          <div class="area_title">
-            <div class="area_title_right">
-              <div
-                @click="dateChange(index)"
-                :class="[
-                  index == 1 ? 'area_title_right_tow' : '',
-                  index == dateCurrent ? 'activeDate' : '',
-                ]"
-                v-for="(item, index) in date"
+        <div class="content_box">
+          <vue-seamless-scroll
+            :class-option="optionSingleHeight"
+            :data="listData"
+            class="seamless_warp"
+          >
+            <ul class="list">
+              <li
+                class="list_item"
+                v-for="(item, index) in listData"
                 :key="index"
               >
-                {{ item.text }}
-              </div>
-            </div>
-          </div>
-          <div ref="annular" :style="{ height: 100 + '%', width: 100 + '%' }">
-            111
-          </div>
+                <span v-text="item.driverName"></span>
+                <span v-text="item.mobile"></span>
+                <span v-text="item.truckLicense"></span>
+                <span v-text="item.appointSrTime"></span>
+                <span>{{ item.isKeyPerson | isKeyPersons }}</span>
+                <span>
+                  <span
+                    class="code_color"
+                    :style="{ backgroundColor: item.codeColor }"
+                  ></span>
+                </span>
+              </li>
+            </ul>
+          </vue-seamless-scroll>
         </div>
       </div>
     </div>
@@ -52,254 +47,83 @@
 </template>
 
 <script>
+import { getOrderList } from "@/api/Control/vehicle/index.js";
 let that = "";
 export default {
   data() {
     return {
-      // 圆环图中间文字
-      annularText: 40,
+      // 头部数据
+      tabList: [
+        {
+          text: "注册司机名",
+        },
+        {
+          text: "手机号",
+        },
+        {
+          text: "车牌照",
+        },
+        {
+          text: "预约时间",
+        },
+        {
+          text: "重点人员",
+        },
+        {
+          text: "码色",
+        },
+      ],
+      // 滚动数据
+      listData: [
+        {
+          driverName: "司机名称",
+          mobile: "手机号码",
+          truckLicense: "车牌号码",
+          appointSrTime: "预约时间",
+          isKeyPerson: 0,
+          codeColor: "green",
+        },
+      ],
+      page: {
+        pageSize: 100,
+        pageNum: 1,
+      },
     };
+  },
+  filters: {
+    isKeyPersons(val) {
+      if (val == 1) {
+        return "是";
+      } else if (val == 0) {
+        return "否";
+      }
+    },
+  },
+  computed: {
+    optionSingleHeight() {
+      return {
+        singleHeight: 50,
+        // waitTime: 2500,
+      };
+    },
   },
   beforeCreate() {
     that = this;
   },
-  mounted() {
-    // 获取车辆管理的环状图
-    this.annular(),
-      // 获取车辆进出分析柱状图
-      this.getVehicle();
+  created() {
+    // 获取车辆到港分析接口
+    // this.getList();
   },
   methods: {
-    // 点击切换 日、周、月
-    dateChange(index) {
-      this.dateCurrent = index;
-      this.getVehicle();
-    },
-    // 获取车辆进出分析柱状图
-    getVehicle() {
-      let myChart = this.$echarts.init(this.$refs.vehicle);
-      window.onresize = myChart.resize;
-      let option = {
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "cross",
-            crossStyle: {
-              color: "#999",
-            },
-          },
-        },
-        legend: {
-          left: "right",
-          textStyle: {
-            color: "#039dc6",
-          },
-          icon: "rect", // 形状
-          itemWidth: 20, // 宽
-          itemHeight: 5, // 高
-          data: ["进港车辆", "离港车辆"],
-        },
-        grid: {
-          top: "20%",
-          left: "0%",
-          right: "0%",
-          bottom: "20%",
-          containLabel: true,
-        },
-        xAxis: [
-          {
-            type: "category",
-            data: ["穿山", "梅山", "北仑", "镇海"],
-            axisPointer: {
-              type: "shadow",
-            },
-            axisLine: {
-              lineStyle: {
-                type: "solid",
-                color: "#74acef", //左边线的颜色
-                width: "2", //坐标线的宽度
-              },
-            },
-          },
-        ],
-        yAxis: [
-          {
-            type: "value",
-            min: 0,
-            // axisLabel: {
-            //   formatter: '{value} °C',
-            // },
-            axisLine: {
-              lineStyle: {
-                type: "solid",
-                color: "#74acef", //左边线的颜色
-                width: "2", //坐标线的宽度
-              },
-            },
-            splitLine: {
-              show: true,
-            },
-          },
-        ],
-        series: [
-          {
-            name: "进港车辆",
-            type: "bar",
-            data: [100, 200, 300, 400],
-            barWidth: 20,
-            itemStyle: {
-              normal: {
-                color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: "#142949" }, //柱图渐变色
-                  { offset: 0.5, color: "#0b6e94" }, //柱图渐变色
-                  { offset: 1, color: "#01b2df" }, //柱图渐变色
-                ]),
-              },
-            },
-          },
-          {
-            name: "离港车辆",
-            type: "bar",
-            data: [150, 160, 170, 180],
-            barWidth: 20,
-            itemStyle: {
-              normal: {
-                color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: "#474038" }, //柱图渐变色
-                  { offset: 0.5, color: "#8a7236" }, //柱图渐变色
-                  { offset: 1, color: "#c39c35" }, //柱图渐变色
-                ]),
-              },
-            },
-          },
-        ],
+    // 获取车辆到港分析接口
+    async getList() {
+      let result = {
+        pageSize: this.page.pageSize,
+        pageNum: this.page.pageNum,
       };
-      myChart.setOption(option);
-    },
-    // 获取车辆管理的折线图
-    annular() {
-      // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(this.$refs.annular);
-      window.onresize = myChart.resize;
-      // 折线图的颜色
-      var colorList = [
-        "#7eacea",
-        "#e15777",
-        "#95ea71",
-        "#ea9b4f",
-        "#7577df",
-        "#be72d8",
-        "#fff",
-      ];
-      // 绘制图表
-      let option = {
-        tooltip: {
-          trigger: "axis",
-
-          axisPointer: {
-            type: "cross",
-            label: {
-              backgroundColor: "#6a7985",
-            },
-          },
-        },
-        legend: {
-          left: "right",
-          textStyle: {
-            color: "#039dc6",
-          },
-          data: ["穿山港区", "梅山港区", "北仑港区", "镇海港区"],
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {},
-          },
-        },
-        grid: {
-          left: "0%",
-          right: "0%",
-          bottom: "10%",
-          top: "20%",
-          containLabel: true,
-        },
-        xAxis: [
-          {
-            type: "category",
-            boundaryGap: false,
-            data: [
-              "00:00",
-              "04:00",
-              "08:00",
-              "12:00",
-              "16:00",
-              "20:00",
-              "24:00",
-            ],
-            axisLine: {
-              lineStyle: {
-                type: "solid",
-                color: "#74acef", //左边线的颜色
-                width: "2", //坐标线的宽度
-              },
-            },
-          },
-        ],
-        yAxis: [
-          {
-            type: "value",
-            axisLine: {
-              lineStyle: {
-                type: "solid",
-                color: "#74acef", //左边线的颜色
-                width: "2", //坐标线的宽度
-              },
-            },
-          },
-        ],
-        series: [
-          {
-            name: "穿山港区",
-            type: "line",
-
-            areaStyle: {},
-            emphasis: {
-              focus: "series",
-            },
-            data: [23, 30, 27, 35, 45, 25, 30],
-          },
-          {
-            name: "梅山港区",
-            type: "line",
-
-            areaStyle: {},
-            emphasis: {
-              focus: "series",
-            },
-            data: [6, 21, 12, 19, 19, 37, 10],
-          },
-          {
-            name: "北仑港区",
-            type: "line",
-
-            areaStyle: {},
-            emphasis: {
-              focus: "series",
-            },
-            data: [6, 10, 27, 9, 16, 7, 8],
-          },
-          {
-            name: "镇海港区",
-            type: "line",
-
-            areaStyle: {},
-            emphasis: {
-              focus: "series",
-            },
-            data: [6, 20, 19, 25, 12, 21, 10],
-          },
-        ],
-      };
-      myChart.setOption(option);
+      let res = await getOrderList(result);
+      this.listData = res.rows;
+      console.log(res);
     },
   },
 };
@@ -318,50 +142,51 @@ export default {
     > div {
       font-size: 0.65rem;
       font-weight: bold;
-      margin-left: 1rem;
     }
   }
   .content {
-    height: 98%;
-    display: flex;
-    flex-direction: column;
-    > div {
-      height: 50%;
-      width: 100%;
-    }
-    .area_title {
+    margin-top: 0.4rem;
+    .content_title {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      font-size: 0.14rem;
-      color: #50f4c1;
-      margin-bottom: 0.3rem;
-      .area_title_left {
+      justify-content: space-evenly;
+      font-size: 0.24rem;
+      color: #fff;
+      margin-bottom: 0.2rem;
+      .content_title_list {
+        width: 16.67%;
+        // width: 20%;
         display: flex;
         align-items: center;
-        height: 100%;
-        > span {
-          width: 0.1rem;
-          height: 0.4rem;
-          background-color: #50f4c1;
-          margin-right: 0.4rem;
-        }
+        justify-content: center;
       }
-      .area_title_right {
-        display: flex;
-        align-items: center;
-        border: 0.02rem solid #0f3a64;
-        > div {
-          color: #20a8ce;
-          padding: 0.2rem;
-          cursor: pointer;
-        }
-        .area_title_right_tow {
-          border-left: 0.01rem solid #0f3a64;
-          border-right: 0.01rem solid #0f3a64;
-        }
-        .activeDate {
-          background-color: #0f3a64;
+    }
+    .content_box {
+      height: 10rem;
+      .seamless_warp {
+        height: 100%;
+        overflow: hidden;
+        color: #fff;
+        .list {
+          .list_item {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            font-size: 0.24rem;
+            height: 2.1rem;
+            > span {
+              width: 16.67%;
+              // width: 20%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              .code_color {
+                width: 0.5rem;
+                height: 0.5rem;
+                border-radius: 50%;
+              }
+            }
+          }
         }
       }
     }

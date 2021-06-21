@@ -1,127 +1,134 @@
 <template>
-  <div>
-    <div class="box">
-      <div class="box_title">
-        <div class="box_title_left">
-          <img src="@/assets/image/Home/right_arrow.png" alt="一车一档" />
-          <div>一车一档</div>
-        </div>
-      </div>
-      <div class="box_top">
-        <div class="box_top_item" v-for="(item, index) in top" :key="index">
-          <div class="box_top_item_left">
-            {{ item.aleft }}
-            <div class="lv">{{ item.aright }}</div>
-          </div>
-        </div>
-      </div>
+  <div class="left_top_box">
+    <div class="box_title">
+      <commonTopText :commonTopText="'一车一档'"></commonTopText>
+    </div>
+    <div class="box_list_box">
+      <div class="box_list_box_total">总数量: <span>45608</span></div>
       <div class="box_list">
-        <div class="box_list_item" v-for="(item, index) in list" :key="index">
-          <div class="box_list_item_ships">
-            <div class="red">{{ item.departure }}</div>
-          </div>
-          <div class="box_list_item_bottom">{{ item.address }}</div>
-        </div>
-      </div>
-      <div class="area_title">
-        <div class="area_title_left">
-          <span></span>
-          <div>港区车辆比例</div>
-        </div>
-      </div>
-      <div class="annular_box">
         <div
-          ref="annular"
-          :style="{ height: 100 + '%', width: 100 + '%' }"
-        ></div>
+          class="list_item"
+          :class="current == index ? 'active' : ''"
+          v-for="(item, index) in list"
+          :key="index"
+          @click="currentChange(index)"
+        >
+          <span>{{ item.num }}</span>
+          <div>{{ item.text }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="goods_box">
+      <div class="goods_box_title">
+        <span></span>
+        <div>港区车辆比例</div>
+      </div>
+      <div class="goods_box_annular">
+        <div ref="goods" :style="{ height: 80 + '%', width: 100 + '%' }">
+          33
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-let that = "";
 export default {
   data() {
     return {
-      // 船只数据列表
-      top: [
-        {
-          id: 0,
-          aleft: "总数量：",
-          aright: 45608,
-        },
-      ],
       list: [
         {
-          id: 0,
-          departure: 1009,
-          address: "穿山港区",
+          text: "镇海港区",
+          num: 1009,
         },
         {
-          id: 0,
-          departure: 1200,
-          address: "梅山港区",
+          text: "梅山港区",
+          num: 1200,
         },
         {
-          id: 0,
-          departure: 1010,
-          address: "北仑港区",
+          text: "北仑港区",
+          num: 1010,
         },
         {
-          id: 0,
-          departure: 1036,
-          address: "镇海港区",
+          text: "穿山港区",
+          num: 1036,
         },
       ],
+      // 当前选中项
+      current: 0,
     };
   },
-  beforeCreate() {
-    that = this;
-  },
   mounted() {
-    // 获取车辆管控的环状图
+    // 获取人员管控的环状图
     this.annular();
   },
   methods: {
-    // 点击切换 日、周、月
-    dateChange(index) {
-      this.dateCurrent = index;
+    // 点击 list 切换显示
+    currentChange(index) {
+      this.current = index;
     },
     // 获取人员管控的环状图
     annular() {
+      let data = [
+        {
+          value: 2178,
+          name: "集卡车辆",
+        },
+        {
+          value: 2178,
+          name: "港区车辆",
+        },
+        {
+          value: 2178,
+          name: "临时车辆",
+        },
+        {
+          value: 2178,
+          name: "其他车辆",
+        },
+      ];
+      let total = 0;
+      data.forEach((item) => {
+        total += item.value;
+      });
+      data.map((item) => {
+        item.num = ((item.value / total) * 100).toFixed(2);
+      });
       // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(this.$refs.annular);
+      let myChart = this.$echarts.init(this.$refs.goods);
       window.onresize = myChart.resize;
       // 环状图的颜色
-      var colorList = [
-        "#7eacea",
-        "#e15777",
-        "#95ea71",
-        "#ea9b4f",
-        "#7577df",
-        "#be72d8",
-        "#fff",
-      ];
+      var colorList = ["#00d1b0", "#00baff", "#ffef00", "#6b4bff"];
       // 绘制图表
       let option = {
         tooltip: {
           trigger: "item",
           formatter: "{b} : {d}% <br/> {c}",
+          formatter: function (params) {
+            if (params.componentType == "series") {
+              var str =
+                params.data.name +
+                `<span style="color:#ffac29">${params.data.num}%</span>` +
+                params.data.value;
+              return str;
+            } else {
+              return "";
+            }
+          },
         },
         graphic: {
           elements: [
             {
               type: "text",
               style: {
-                text: "车辆比例",
+                text: "车辆比列",
                 width: 200,
                 height: 200,
-                fill: "#97c5f6",
-                fontSize: 16,
+                fill: "#3da7e9",
+                fontSize: 12,
               },
               left: "center",
-              top: "50%",
+              top: "47.5%",
             },
           ],
         },
@@ -130,25 +137,7 @@ export default {
             type: "pie",
             radius: [40, 60],
             center: ["50%", "50%"],
-            // roseType: 'radius',
-            data: [
-              {
-                value: 2178,
-                name: "其他车辆",
-              },
-              {
-                value: 2178,
-                name: "港区车辆",
-              },
-              {
-                value: 2178,
-                name: "集卡车辆",
-              },
-              {
-                value: 2178,
-                name: "其他车辆",
-              },
-            ],
+            data: data,
             // 设置圆环颜色
             itemStyle: {
               normal: {
@@ -174,10 +163,10 @@ export default {
                     "{c|" +
                     params.data.name +
                     "}" +
-                    "{b|\n" +
-                    ((params.data.value / 8712) * 100).toFixed(2) +
-                    "%}" +
                     "{c|\n" +
+                    ((params.data.value / total) * 100).toFixed(2) +
+                    "%}" +
+                    "{b|\n" +
                     params.data.value +
                     "}";
                   return str;
@@ -208,130 +197,82 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.box {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.left_top_box {
   .box_title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .box_title_left {
-      display: flex;
-      align-items: center;
-      color: #50f4c1;
-      > img {
-        height: 0.6rem;
-      }
-      > div {
-        font-size: 0.65rem;
-        font-weight: bold;
-        margin-left: 1rem;
-      }
-    }
-    .box_title_right {
-      font-size: 0.14rem;
-      display: flex;
-      align-items: center;
-      border: 0.02rem solid #0f3a64;
-      > div {
-        color: #20a8ce;
-        padding: 0.2rem;
-        cursor: pointer;
-      }
-      .area_title_right_tow {
-        border-left: 0.01rem solid #0f3a64;
-        border-right: 0.01rem solid #0f3a64;
-      }
-      .activeDate {
-        background-color: #0f3a64;
-      }
-    }
-    .area_title_right_tow {
-      border-left: 0.01rem solid #0f3a64;
-      border-right: 0.01rem solid #0f3a64;
-    }
-    .activeDate {
-      background-color: #0f3a64;
-    }
-  }
-  .annular {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .area_title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.14rem;
     color: #50f4c1;
-    margin-bottom: 0.3rem;
-    .area_title_left {
+  }
+  .box_list_box {
+    .box_list_box_total {
       display: flex;
       align-items: center;
-      height: 100%;
+      justify-content: flex-end;
+      font-size: 0.4rem;
+      color: #3da7e9;
+      margin-bottom: 0.5rem;
       > span {
-        width: 0.1rem;
-        height: 0.4rem;
-        background-color: #50f4c1;
-        margin-right: 0.4rem;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #00bb00;
+        margin-left: 0.4rem;
       }
     }
-  }
-  .annular_box {
-    height: 50%;
-  }
-  .box_top {
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
-  .box_top_item {
-    align-items: center;
-    font-size: 0.4rem;
-    width: 100%;
-    text-align: right;
-    line-height: 50%;
-    font-size: 0.5rem;
-    float: right;
-  }
-  .box_top_item_left {
-    color: #039dc6;
-    .lv {
-      color: #03f53f;
-      float: right;
-      font-size: 0.8rem;
-    }
-  }
-  .box_list {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .box_list_item {
-      align-items: center;
-      border: 0.01rem solid #2f91b4;
-      font-size: 0.6rem;
-      width: 23%;
-      height: 2.5rem;
-      border-radius: 10%;
-      text-align: center;
-      overflow: hidden;
-      background-color: rgba(47, 145, 180, 0.2);
-      .box_list_item_ships {
-        padding: 0.2rem 0;
-        color: #2f91b4;
-        .red {
-          color: #50f4c1;
+    .box_list {
+      display: flex;
+      justify-content: space-between;
+      .list_item {
+        width: 24%;
+        height: 3.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: url("../../../../assets/image/Control/list.jpg");
+        background-size: 100% 100%;
+        cursor: pointer;
+        > span {
+          font-size: 0.8rem;
+          font-weight: bold;
+          color: #00fafd;
+        }
+        > div {
+          font-size: 0.3rem;
+          margin-top: 0.6rem;
+          color: #69abd1;
         }
       }
-      .box_list_item_bottom {
-        color: #50f4c1;
-        width: 100%;
-        padding: 0.2rem 0.4rem;
-        border-radius: 0 0 10% 10%;
+      .active {
+        background: url("../../../../assets/image/Control/list_current.jpg");
+        background-size: 100% 100%;
+        > span {
+          color: #fff;
+        }
+        > div {
+          color: #fff;
+        }
       }
+    }
+  }
+  .goods_box {
+    margin-top: 0.4rem;
+    .goods_box_title {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      font-size: 0.3rem;
+      color: #00ffff;
+      > span {
+        height: 0.4rem;
+        width: 0.1rem;
+        background-color: #00ffff;
+        margin-right: 0.4rem;
+      }
+      > div {
+      }
+    }
+    .goods_box_annular {
+      margin-top: 0.3rem;
+      height: 8.6rem;
+      width: 100%;
     }
   }
 }

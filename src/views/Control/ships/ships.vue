@@ -1,6 +1,6 @@
 <template>
   <div class="contain">
-    <commonTitle :commonTitleText="'数字海港 — 船只管控'"></commonTitle>
+    <commonTitle :commonTitleText="'数智港警 — 船只管控'"></commonTitle>
     <div class="box">
       <div class="box_common box_left">
         <leftTop class="box_bgi leftTop"></leftTop>

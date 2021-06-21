@@ -2,19 +2,27 @@
   <div>
     <div class="box">
       <div class="box_title">
-        <img src="@/assets/image/Home/right_arrow.png" alt="集卡预约管控" />
-        <div>集卡预约管控</div>
+        <commonTopText :commonTopText="'集卡预约管控'"></commonTopText>
       </div>
       <div class="content">
         <div>
           <div class="box_top">
-            <div class="box_top_item" v-for="(item, index) in top" :key="index">
-              <div class="box_top_item_ships">
-                <div class="red">{{ item.atop }}</div>
+            <div class="box_top_item" @click="goUrl('注册司机')">
+              <img src="@/assets/image/Control/vehicle_driver.png" alt="" />
+              <div class="box_top_item_content">
+                <div class="box_top_item_text">注册司机</div>
+                <div class="box_top_item_num driver">
+                  {{ countsObj.driverCount }}<span>人</span>
+                </div>
               </div>
-              <div class="box_top_item_bottom">
-                {{ item.abottom }}
-                <div class="box_top_item_bottom_right">{{ item.aright }}</div>
+            </div>
+            <div class="box_top_item">
+              <img src="@/assets/image/Control/vehicle_car.png" alt="" />
+              <div class="box_top_item_content">
+                <div class="box_top_item_text">注册集卡车</div>
+                <div class="box_top_item_num car">
+                  {{ countsObj.carCount }}<span>辆</span>
+                </div>
               </div>
             </div>
           </div>
@@ -29,14 +37,38 @@
           <div class="box_list">
             <div
               class="box_list_item"
+              :class="current == 0 ? 'active' : ''"
+              @click="currentChange(0)"
+            >
+              <div>{{ orderObj.today_reservation }}</div>
+              <span>今日预约</span>
+            </div>
+            <div
+              class="box_list_item"
+              :class="current == 1 ? 'active' : ''"
+              @click="currentChange(1)"
+            >
+              <div>{{ orderObj.tomorrow_reservation }}</div>
+              <span>明日预约</span>
+            </div>
+            <div
+              class="box_list_item"
+              :class="current == 2 ? 'active' : ''"
+              @click="currentChange(2)"
+            >
+              <div>{{ orderObj.today_arrival }}</div>
+              <span>今日已抵达</span>
+            </div>
+            <!-- <div
+              class="box_list_item"
               v-for="(item, index) in list"
+              :class="current == index ? 'active' : ''"
+              @click="currentChange(index)"
               :key="index"
             >
-              <div class="box_list_item_ships">
-                <div class="red">{{ item.departure }}</div>
-              </div>
-              <div class="box_list_item_bottom">{{ item.address }}</div>
-            </div>
+              <div>{{ item.num }}</div>
+              <span>{{ item.order }}</span>
+            </div> -->
           </div>
           <div ref="vehicle" :style="{ height: 100 + '%', width: 100 + '%' }">
             111
@@ -48,11 +80,11 @@
 </template>
 
 <script>
+import { getCount, getOrderCount } from "@/api/Control/vehicle/index.js";
 let that = "";
 export default {
   data() {
     return {
-      dateCurrent: 0,
       top: [
         {
           id: 0,
@@ -67,36 +99,46 @@ export default {
           aright: "辆",
         },
       ],
-      list: [
-        {
-          id: 0,
-          departure: 1009,
-          address: "今日预约",
-        },
-        {
-          id: 0,
-          departure: 1320,
-          address: "明日预约",
-        },
-        {
-          id: 0,
-          departure: 4500,
-          address: "累计预约",
-        },
-      ],
+      // 港区预约统计数据
+      orderObj: {},
+      // 注册人与车统计数据
+      countsObj: {},
+      // 当前选中项
+      current: 0,
     };
   },
   beforeCreate() {
     that = this;
+  },
+  created() {
+    // 注册人与车统计接口
+    this.getCounts();
+    // 获取预约统计数据
+    this.getOrderCounts();
   },
   mounted() {
     // 获取车辆进出分析柱状图
     this.getVehicle();
   },
   methods: {
-    dateChange(index) {
-      this.dateCurrent = index;
-      this.getVehicle();
+    // current 切换的时候
+    currentChange(index) {
+      this.current = index;
+    },
+    // 跳转页面
+    goUrl(e) {
+      if (e == "注册司机") {
+        this.$router.push("/driverList");
+      }
+    },
+    async getOrderCounts() {
+      let res = await getOrderCount();
+      this.orderObj = res.data;
+    },
+    // 注册人与车统计接口
+    async getCounts() {
+      let res = await getCount();
+      this.countsObj = res.data;
     },
     // 获取车辆进出分析柱状图
     getVehicle() {
@@ -113,7 +155,7 @@ export default {
           },
         },
         grid: {
-          top: "22%",
+          top: "20%",
           left: "0%",
           right: "0%",
           bottom: "10%",
@@ -139,6 +181,7 @@ export default {
           {
             type: "value",
             min: 0,
+            name: "单位: 辆",
             // axisLabel: {
             //   formatter: '{value} °C',
             // },
@@ -182,17 +225,7 @@ export default {
 .box {
   height: 100%;
   .box_title {
-    display: flex;
-    align-items: center;
     color: #50f4c1;
-    > img {
-      height: 0.6rem;
-    }
-    > div {
-      font-size: 0.65rem;
-      font-weight: bold;
-      margin-left: 1rem;
-    }
   }
   .content {
     height: 98%;
@@ -244,69 +277,79 @@ export default {
     align-items: center;
     justify-content: space-between;
     .box_list_item {
+      cursor: pointer;
+      height: 2rem;
+      width: 31%;
+      background-color: #0d205a;
+      border: 0.01rem solid #0e2773;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      border: 0.01rem solid #2f91b4;
-      font-size: 0.6rem;
-      width: 30%;
-      height: 2.4rem;
-      border-radius: 10%;
-      text-align: center;
-      overflow: hidden;
-      background-color: rgba(47, 145, 180, 0.2);
-      .box_list_item_ships {
-        padding: 0.2rem 0;
-        color: #2f91b4;
-        font-size: 1rem;
-        .red {
-          color: #50f4c1;
-        }
+      justify-content: center;
+      > div {
+        font-size: 0.8rem;
+        color: #00c9d6;
+        margin-bottom: 0.2rem;
       }
-      .box_list_item_bottom {
-        color: #50f4c1;
-        width: 100%;
-        padding: 0.2rem 0.4rem;
-        border-radius: 0 0 10% 10%;
+      > span {
+        font-size: 0.2rem;
+        color: #528fb5;
+      }
+    }
+    .active {
+      // background-color: #00a0cc;
+      background: linear-gradient(to bottom, #0079a2 0%, #00cffc 100%);
+      > div {
+        font-weight: 600;
+        color: #fff;
+      }
+      > span {
+        font-weight: 500;
+        color: #fff;
       }
     }
   }
   .box_top {
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     .box_top_item {
+      cursor: pointer;
+      display: flex;
       align-items: center;
-      border: 0.01rem solid #2f91b4;
-      font-size: 0.6rem;
-      width: 46%;
-      height: 3rem;
-      line-height: 200%;
-      border-radius: 10%;
-      text-align: center;
-      overflow: hidden;
-      background-color: rgba(47, 145, 180, 0.2);
-      .box_top_item_ships {
-        padding: 0.2rem 0;
-        color: #ffffff;
-        font-size: 0.7rem;
-        .red {
-          color: #ffffff;
+      width: 45%;
+      height: 70%;
+      background: url("../../../../assets/image/Control/epidemic_bgi.jpg");
+      background-size: 100% 100%;
+      > img {
+        width: 1rem;
+        margin: 0 0.5rem;
+      }
+      .box_top_item_content {
+        display: flex;
+        flex-direction: column;
+        .box_top_item_text {
+          margin-bottom: 0.3rem;
+          font-size: 0.4rem;
+          color: #fff;
         }
-      }
-      .box_top_item_bottom {
-        color: #00ff00;
-        width: 100%;
-        padding: 0.2rem 0.4rem;
-        border-radius: 0 0 10% 10%;
-        text-align: center;
-        line-height: 50%;
-        font-size: 1rem;
-        padding-left: 1.2rem;
-      }
-      .box_top_item_bottom_right {
-        color: rgb(255, 255, 255);
-        float: right;
-        padding-right: 0.8rem;
-        font-size: 0.7rem;
+        .box_top_item_num {
+          font-size: 0.8rem;
+          font-weight: bold;
+          > span {
+            color: #427ba2;
+            font-weight: 400;
+            font-size: 0.3rem;
+            margin-left: 0.3rem;
+          }
+        }
+        .driver {
+          color: #009a0b;
+        }
+        .car {
+          color: #f8a400;
+        }
       }
     }
   }

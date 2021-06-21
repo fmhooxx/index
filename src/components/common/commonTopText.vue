@@ -21,11 +21,6 @@ export default {
       default: false,
     },
   },
-  created() {
-    console.log(this.flag);
-    if (this.flag) {
-    }
-  },
   methods: {
     goUrl(url) {
       this.$router.push(url);

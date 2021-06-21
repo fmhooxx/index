@@ -1,7 +1,7 @@
 <template>
   <div class="left_top_box">
     <div class="box_title">
-      <commonTopText :commonTopText="'车辆违法行为管控'"></commonTopText>
+      <commonTopText :commonTopText="'货物吞吐量'"></commonTopText>
     </div>
     <div class="box_list_box">
       <div class="box_list_box_total">总数量: <span>45608</span></div>
@@ -21,10 +21,10 @@
     <div class="goods_box">
       <div class="goods_box_title">
         <span></span>
-        <div>车辆违规行为比例</div>
+        <div>货物比例</div>
       </div>
       <div class="goods_box_annular">
-        <div ref="goods" :style="{ height: 100 + '%', width: 100 + '%' }">
+        <div ref="goods" :style="{ height: 80 + '%', width: 100 + '%' }">
           33
         </div>
       </div>
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { getCount } from "@/api/Control/vehicle/index.js";
 export default {
   data() {
     return {
@@ -58,11 +59,19 @@ export default {
       current: 0,
     };
   },
+  created() {
+    // 获取注册人与车统计数据
+    this.getCounts();
+  },
   mounted() {
     // 获取人员管控的环状图
     this.annular();
   },
   methods: {
+    // 获取注册人与车统计数据
+    getCounts() {
+      let res = getCount();
+    },
     // 点击 list 切换显示
     currentChange(index) {
       this.current = index;
@@ -71,43 +80,63 @@ export default {
     annular() {
       let data = [
         {
-          value: 3000,
-          name: "载重",
-        },
-        {
           value: 2000,
-          name: "其他",
+          name: "装货",
         },
         {
-          value: 2500,
-          name: "预停牌",
-        },
-        {
-          value: 2500,
-          name: "违停",
+          value: 8000,
+          name: "卸货",
         },
       ];
       let total = 0;
       data.forEach((item) => {
         total += item.value;
       });
+      data.map((item) => {
+        item.num = ((item.value / total) * 100).toFixed(2);
+      });
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(this.$refs.goods);
       window.onresize = myChart.resize;
       // 环状图的颜色
-      var colorList = ["#fede00", "#ff8e54", "#469ae3", "#8c30ad"];
+      var colorList = ["#6b4bff", "#00b9ff"];
       // 绘制图表
       let option = {
         tooltip: {
           trigger: "item",
-          formatter: "{b} : {d}% <br/> {c}",
+          formatter: function (params) {
+            if (params.componentType == "series") {
+              var str =
+                params.data.name +
+                `<span style="color:#ffac29">${params.data.num}%</span>` +
+                params.data.value;
+              return str;
+            } else {
+              return "";
+            }
+          },
+        },
+        graphic: {
+          elements: [
+            {
+              type: "text",
+              style: {
+                text: "类型比例",
+                width: 200,
+                height: 200,
+                fill: "#3da7e9",
+                fontSize: 12,
+              },
+              left: "center",
+              top: "45%",
+            },
+          ],
         },
         series: [
           {
             type: "pie",
-            // radius: [30, 50],
+            radius: [40, 60],
             center: ["50%", "50%"],
-            roseType: "radius",
             data: data,
             // 设置圆环颜色
             itemStyle: {
@@ -120,8 +149,8 @@ export default {
             labelLine: {
               normal: {
                 show: true,
-                length: 1,
-                length2: 20,
+                length: 10,
+                length2: 10,
                 lineStyle: {
                   width: 2,
                 },
@@ -130,14 +159,15 @@ export default {
             label: {
               normal: {
                 formatter: function (params) {
+                  console.log(params.data);
                   var str =
                     "{c|" +
                     params.data.name +
                     "}" +
-                    "{c|\n" +
+                    "{b|\n" +
                     ((params.data.value / total) * 100).toFixed(2) +
                     "%}" +
-                    "{b|\n" +
+                    "{c|\n" +
                     params.data.value +
                     "}";
                   return str;
@@ -183,7 +213,7 @@ export default {
       > span {
         font-size: 0.8rem;
         font-weight: bold;
-        color: #a94fe8;
+        color: #00bb00;
         margin-left: 0.4rem;
       }
     }
@@ -242,7 +272,7 @@ export default {
     }
     .goods_box_annular {
       margin-top: 0.3rem;
-      height: 6.6em;
+      height: 8.6rem;
       width: 100%;
     }
   }

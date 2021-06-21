@@ -1,8 +1,19 @@
 <template>
   <div>
-    <commonTitle :commonTitleText="'数字海港 — 人员进出详情'"></commonTitle>
+    <commonTitle
+      :type="true"
+      :commonTitleText="'数智港警 — 精密智控'"
+    ></commonTitle>
     <div class="table_box">
-      <el-table
+      <iframe
+        style="margin-top: 0.8rem"
+        ref="iframe"
+        src="http://41.204.15.209:10219"
+        width="100%"
+        height="100%"
+        frameborder="0"
+      />
+      <!-- <el-table
         :data="tableData"
         style="width: 100%"
         :header-cell-style="{ background: '#00446f', color: '#fff' }"
@@ -16,7 +27,7 @@
         </el-table-column>
         <el-table-column align="center" prop="address" label="拍摄地点">
         </el-table-column>
-      </el-table>
+      </el-table> -->
     </div>
   </div>
 </template>
@@ -25,19 +36,31 @@
 export default {
   data() {
     return {
-      tableData: [],
+      // tableData: [],
+      // urlSrc: "http://41.204.103.50:11001/pages/rlkk/rlList.jsp",
+      urlSrc: "http://41.204.15.209:10219",
     };
   },
   created() {
-    this.getLsit();
+    // this.getLsit();
+  },
+  mounted() {
+    // console.log("------");
+    // console.log(window.location);
+    // console.log("------");
+    // // console.log(this.$refs.iframe);
+    // // console.log(this.$refs.iframe.contentWindow);
+    // window.onmessage = function (e) {
+    //   console.log("从父域获取到的数据", e);
+    // };
   },
   methods: {
-    getLsit() {
-      this.$http.post("http://41.204.103.50:11001/bk/rl_list").then((res) => {
-        console.log(res);
-        this.tableData = res.data;
-      });
-    },
+    // getLsit() {
+    //   this.$http.post("http://41.204.103.50:11001/bk/rl_list").then((res) => {
+    //     console.log(res);
+    //     this.tableData = res.data;
+    //   });
+    // },
   },
 };
 </script>
@@ -45,6 +68,7 @@ export default {
 <style lang="less" scoped>
 .table_box {
   margin-top: 0.4rem;
+  height: 100%;
   /deep/.el-form-item__label {
     color: #fff;
   }

@@ -1,11 +1,7 @@
 <template>
   <div class="middle_bottom_box">
-    <div class="box_title" @click="jump">
-      <commonTopText
-        ref="commonTopText"
-        :flag="true"
-        :commonTopText="'人员进出统计'"
-      ></commonTopText>
+    <div class="box_title">
+      <commonTopText :commonTopText="'人员进出统计'"></commonTopText>
     </div>
     <div class="content">
       <div>
@@ -45,10 +41,6 @@ export default {
     this.getPeopleRight();
   },
   methods: {
-    // 跳转页面
-    jump() {
-      this.$refs.commonTopText.goUrl("/peopleOutDetails");
-    },
     // 获取人员进出统计柱状图
     getPeopel() {
       let myChart = this.$echarts.init(this.$refs.content_top);
@@ -249,6 +241,13 @@ export default {
         { value: 300, name: "马来西亚" },
         { value: 200, name: "韩国" },
       ];
+      let total = 0;
+      data.forEach((item) => {
+        total += item.value;
+      });
+      data.map((item) => {
+        item.num = ((item.value / total) * 100).toFixed(2);
+      });
       window.onresize = myChart.resize;
       var colorList = [
         "#f8b58a",
@@ -262,18 +261,30 @@ export default {
       let option = {
         tooltip: {
           trigger: "item",
+          formatter: function (params) {
+            if (params.componentType == "series") {
+              var str =
+                params.data.name +
+                `<span style="color:#ffac29">${params.data.num}%</span>` +
+                params.data.value;
+              return str;
+            } else {
+              return "";
+            }
+          },
         },
         legend: {
           orient: "vertical",
-          top: "bottom",
-          left: "right",
-          type: "scroll",
+          // top: "center",
+          // left: "right",
+          // type: "scroll",
           textStyle: {
             color: "#039dc6",
           },
           itemWidth: 10,
           itemHeight: 10,
           icon: "circle",
+          x: "50%",
           formatter(name) {
             let num = "";
             let total = 0;
@@ -284,7 +295,21 @@ export default {
               }
             });
             let p = (num / total) * 100;
-            return name + p.toFixed(2) + "%";
+            // return name + p.toFixed(2) + "%";
+            return "{a|" + name + "}" + "{b|" + p.toFixed(2) + "%" + "}";
+          },
+          textStyle: {
+            rich: {
+              a: {
+                color: "#3aa7ee",
+                fontSize: 12,
+              },
+              b: {
+                color: "#d18814",
+                fontSize: 12,
+                padding: 4,
+              },
+            },
           },
         },
         graphic: {

@@ -1,408 +1,199 @@
 <template>
-  <div>
-    <div class="box">
-      <div class="box_title">
-        <div class="box_title_left" @click="jump">
-          <commonTopText
-            :flag="true"
-            ref="commonTopText"
-            :commonTopText="'预警中心'"
-          ></commonTopText>
-        </div>
-        <div class="box_title_right">
-          <div
-            @click="dateChange(index)"
-            :class="[
-              index == 1 ? 'area_title_right_tow' : '',
-              index == dateCurrent ? 'activeDate' : '',
-            ]"
-            v-for="(item, index) in date"
-            :key="index"
-          >
-            {{ item.text }}
-          </div>
+  <div class="right_bottom_box">
+    <div class="box_title">
+      <commonTopText :commonTopText="'预警中心'"></commonTopText>
+    </div>
+    <div class="content">
+      <div class="content_title">
+        <div
+          class="content_title_list"
+          v-for="(item, index) in tabList"
+          :key="index"
+        >
+          {{ item.text }}
         </div>
       </div>
-      <div class="box_text">
-        <div>
-          <div>预警总数</div>
-          <span class="yellow">1624</span>
-        </div>
-        <div>
-          <div>已处理</div>
-          <span class="green">1524</span>
-        </div>
-        <div>
-          <div>未处理</div>
-          <span class="red">100</span>
-        </div>
-      </div>
-      <div class="annular_box">
-        <div
-          ref="annularLeft"
-          :style="{ height: 100 + '%', width: 100 + '%' }"
-        ></div>
-        <div
-          ref="annularRight"
-          :style="{ height: 100 + '%', width: 100 + '%' }"
-        ></div>
+      <div class="content_box">
+        <vue-seamless-scroll
+          :class-option="optionSingleHeight"
+          :data="listData"
+          class="seamless_warp"
+        >
+          <ul class="list">
+            <li
+              class="list_item"
+              v-for="(item, index) in listData"
+              :key="index"
+            >
+              <span v-text="item.area"></span>
+              <span v-text="item.bayonet"></span>
+              <span v-text="item.car"></span>
+              <span v-text="item.timer"></span>
+              <span>
+                <span
+                  class="code_color"
+                  :style="{ backgroundColor: item.codeColor }"
+                ></span>
+              </span>
+            </li>
+          </ul>
+        </vue-seamless-scroll>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-let that = "";
 export default {
   data() {
     return {
-      // 日、周、月
-      date: [
+      // 头部数据
+      tabList: [
         {
-          id: 0,
-          text: "日",
+          text: "港区",
         },
         {
-          id: 1,
-          text: "周",
+          text: "卡口",
         },
         {
-          id: 2,
-          text: "月",
+          text: "车辆",
+        },
+        {
+          text: "预警时间",
+        },
+        {
+          text: "码色",
         },
       ],
-      // 日、周、月 当前选中项
-      dateCurrent: 0,
-      // 圆环图中间文字
-      annularText: 40,
+      // 滚动数据
+      listData: [
+        {
+          area: "北仑港区",
+          bayonet: "卡口",
+          car: "车辆",
+          timer: "预警时间",
+          codeColor: "green",
+        },
+        {
+          area: "梅山港区",
+          bayonet: "卡口",
+          car: "车辆",
+          timer: "预警时间",
+          codeColor: "green",
+        },
+        {
+          area: "镇海港区",
+          bayonet: "卡口",
+          car: "车辆",
+          timer: "预警时间",
+          codeColor: "green",
+        },
+        {
+          area: "穿山港区",
+          bayonet: "卡口",
+          car: "车辆",
+          timer: "预警时间",
+          codeColor: "green",
+        },
+        {
+          area: "穿山港区",
+          bayonet: "卡口",
+          car: "车辆",
+          timer: "预警时间",
+          codeColor: "green",
+        },
+        {
+          area: "镇海港区",
+          bayonet: "卡口",
+          car: "车辆",
+          timer: "预警时间",
+          codeColor: "green",
+        },
+      ],
+      page: {
+        pageSize: 100,
+        pageNum: 1,
+      },
     };
   },
-  beforeCreate() {
-    that = this;
+  computed: {
+    optionSingleHeight() {
+      return {
+        singleHeight: 50,
+        // waitTime: 2500,
+      };
+    },
   },
-  mounted() {
-    // 获取左边的环状图
-    this.annularLeft();
-    // 获取右边的环状图
-    this.annularRight();
+  created() {
+    // 获取车辆到港分析接口
+    // this.getList();
   },
   methods: {
-    // 跳转页面
-    jump() {
-      this.$refs.commonTopText.goUrl("/earlyWarning");
-    },
-    // 点击切换 日、周、月
-    dateChange(index) {
-      this.dateCurrent = index;
-    },
-    // 获取左边的环状图
-    annularLeft() {
-      // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(this.$refs.annularLeft);
-      window.onresize = myChart.resize;
-      // 环状图的颜色
-      var colorList = [
-        "#7eacea",
-        "#e15777",
-        "#95ea71",
-        "#ea9b4f",
-        "#7577df",
-        "#be72d8",
-        "#fff",
-      ];
-      // 绘制图表
-      let option = {
-        tooltip: {
-          trigger: "item",
-          formatter: "{b} : {d}% <br/> {c}",
-        },
-        series: [
-          {
-            type: "pie",
-            // radius: [40, 50],
-            center: ["50%", "50%"],
-            roseType: "radius",
-            data: [
-              {
-                value: 3735,
-                name: "北仑港口",
-              },
-              {
-                value: 7843,
-                name: "镇海港口",
-              },
-              {
-                value: 3735,
-                name: "穿山港区",
-              },
-              {
-                value: 7000,
-                name: "梅山港区",
-              },
-            ],
-            // 设置圆环颜色
-            itemStyle: {
-              normal: {
-                color: function (params) {
-                  return colorList[params.dataIndex];
-                },
-              },
-            },
-            labelLine: {
-              normal: {
-                show: true,
-                length: 10,
-                length2: 10,
-                lineStyle: {
-                  width: 2,
-                },
-              },
-            },
-            label: {
-              normal: {
-                formatter: function (params) {
-                  var str =
-                    "{c|" +
-                    params.data.name +
-                    "}" +
-                    "{b|\n" +
-                    ((params.data.value / 175043) * 100).toFixed(2) +
-                    "%}" +
-                    "{c|\n" +
-                    params.data.value +
-                    "}";
-                  return str;
-                },
-                rich: {
-                  c: {
-                    color: "#97c5f6",
-                    fontSize: 12,
-                    align: "left",
-                    padding: 4,
-                  },
-                  b: {
-                    color: "#ffac29",
-                    fontSize: 12,
-                    align: "left",
-                    padding: 4,
-                  },
-                },
-              },
-            },
-          },
-        ],
+    // 获取车辆到港分析接口
+    async getList() {
+      let result = {
+        pageSize: this.page.pageSize,
+        pageNum: this.page.pageNum,
       };
-      myChart.setOption(option);
-    },
-    // 获取右边的环状图
-    annularRight() {
-      // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(this.$refs.annularRight);
-      window.onresize = myChart.resize;
-      // 环状图的颜色
-      var colorList = [
-        "#7eacea",
-        "#e15777",
-        "#95ea71",
-        "#ea9b4f",
-        "#7577df",
-        "#be72d8",
-        "#fff",
-      ];
-      // 绘制图表
-      let option = {
-        tooltip: {
-          trigger: "item",
-          formatter: "{b} : {d}% <br/> {c}",
-        },
-        graphic: {
-          elements: [
-            {
-              type: "text",
-              style: {
-                text: "一船一档",
-                width: 200,
-                height: 200,
-                fill: "#97c5f6",
-                fontSize: 16,
-              },
-              left: "center",
-              top: "40%",
-            },
-            {
-              type: "text",
-              style: {
-                text: that.annularText,
-                width: 200,
-                height: 200,
-                fill: "#50f4c1",
-                fontSize: 16,
-              },
-              left: "center",
-              top: "55%",
-            },
-          ],
-        },
-        series: [
-          {
-            type: "pie",
-            radius: [40, 50],
-            center: ["50%", "50%"],
-            // roseType: 'radius',
-            data: [
-              {
-                value: 3735,
-                name: "北仑港口",
-              },
-              {
-                value: 7843,
-                name: "镇海港口",
-              },
-              {
-                value: 3735,
-                name: "穿山港区",
-              },
-              {
-                value: 7000,
-                name: "梅山港区",
-              },
-            ],
-            // 设置圆环颜色
-            itemStyle: {
-              normal: {
-                color: function (params) {
-                  return colorList[params.dataIndex];
-                },
-              },
-            },
-            labelLine: {
-              normal: {
-                show: true,
-                length: 10,
-                length2: 10,
-                lineStyle: {
-                  width: 2,
-                },
-              },
-            },
-            label: {
-              normal: {
-                formatter: function (params) {
-                  var str =
-                    "{c|" +
-                    params.data.name +
-                    "}" +
-                    "{b|\n" +
-                    ((params.data.value / 175043) * 100).toFixed(2) +
-                    "%}" +
-                    "{c|\n" +
-                    params.data.value +
-                    "}";
-                  return str;
-                },
-                rich: {
-                  c: {
-                    color: "#97c5f6",
-                    fontSize: 12,
-                    align: "left",
-                    padding: 4,
-                  },
-                  b: {
-                    color: "#ffac29",
-                    fontSize: 12,
-                    align: "left",
-                    padding: 4,
-                  },
-                },
-              },
-            },
-          },
-        ],
-      };
-      myChart.setOption(option);
+      let res = await getOrderList(result);
+      this.listData = res.rows;
+      // console.log(res);
     },
   },
 };
 </script>
 
 <style lang="less" scoped>
-.box {
-  height: 100%;
+.right_bottom_box {
   .box_title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .box_title_left {
-      display: flex;
-      align-items: center;
-      color: #50f4c1;
-      > img {
-        height: 0.6rem;
-      }
-      > div {
-        font-size: 0.65rem;
-        font-weight: bold;
-        margin-left: 1rem;
-      }
-    }
-    .box_title_right {
-      margin-right: 0.3rem;
-      font-size: 0.14rem;
-      display: flex;
-      align-items: center;
-      border: 0.02rem solid #0f3a64;
-      > div {
-        color: #20a8ce;
-        padding: 0.2rem;
-        cursor: pointer;
-      }
-      .area_title_right_tow {
-        border-left: 0.01rem solid #0f3a64;
-        border-right: 0.01rem solid #0f3a64;
-      }
-      .activeDate {
-        background-color: #0f3a64;
-      }
-    }
-    .area_title_right_tow {
-      border-left: 0.01rem solid #0f3a64;
-      border-right: 0.01rem solid #0f3a64;
-    }
-    .activeDate {
-      background-color: #0f3a64;
-    }
+    color: #50f4c1;
   }
-  .box_text {
-    display: flex;
-    align-items: center;
-    margin: 0.6rem 0 0 1rem;
-    > div {
+  .content {
+    margin-top: 0.4rem;
+    .content_title {
       display: flex;
       align-items: center;
-      font-size: 0.5rem;
-      color: #2f91b4;
-      margin-right: 1rem;
-      > div {
-        margin-right: 1rem;
-      }
-      .yellow {
-        color: #f09101;
-      }
-      .green {
-        color: #01e9be;
-      }
-      .red {
-        color: #f40001;
+      justify-content: space-evenly;
+      font-size: 0.24rem;
+      color: #fff;
+      margin-bottom: 0.2rem;
+      .content_title_list {
+        width: 16.67%;
+        // width: 33.33%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
-  }
-  .annular_box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 70%;
-    width: 100%;
-    margin-top: 0.6rem;
+    .content_box {
+      height: 7rem;
+      .seamless_warp {
+        height: 100%;
+        overflow: hidden;
+        color: #fff;
+        .list {
+          .list_item {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            font-size: 0.24rem;
+            height: 2.1rem;
+            > span {
+              width: 16.67%;
+              // width: 33.33%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              .code_color {
+                width: 0.5rem;
+                height: 0.5rem;
+                border-radius: 50%;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 </style>

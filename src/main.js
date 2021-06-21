@@ -14,6 +14,10 @@ Vue.component("commonTitle", commonTitle)
 import commonTopText from './components/common/commonTopText.vue'
 Vue.component("commonTopText", commonTopText)
 
+// 滚动列表
+import scroll from 'vue-seamless-scroll'
+Vue.use(scroll)
+
 import axios from 'axios'
 Vue.prototype.$http = axios;
 

@@ -1,7 +1,11 @@
 <template>
   <div class="left_Bottom_box">
-    <div class="box_title">
-      <commonTopText :commonTopText="'重点人员管控'"></commonTopText>
+    <div class="box_title" @click="jump">
+      <commonTopText
+        :flag="true"
+        ref="commonTopText"
+        :commonTopText="'重点人员管控'"
+      ></commonTopText>
     </div>
     <div class="content">
       <div>
@@ -36,6 +40,10 @@ export default {
     this.getContentBottom();
   },
   methods: {
+    // 跳转页面
+    jump() {
+      this.$refs.commonTopText.goUrl("/keyPersonnelList");
+    },
     // 获取上面的圆环数据
     getContentTop() {
       let myChart = this.$echarts.init(this.$refs.content_top);
@@ -70,7 +78,17 @@ export default {
       let option = {
         tooltip: {
           trigger: "item",
-          formatter: "{b} : {d}% <br/> {c}",
+          formatter: function (params) {
+            if (params.componentType == "series") {
+              var str =
+                params.data.name +
+                `<span style="color:#ffac29">${params.data.num}%</span>` +
+                params.data.value;
+              return str;
+            } else {
+              return "";
+            }
+          },
         },
         legend: {
           orient: "vertical",
@@ -83,10 +101,23 @@ export default {
             let text = "";
             data.forEach((item) => {
               if (item.name == name) {
-                text = name + "(" + item.value + ")";
+                text = "{a|" + name + "}" + "{b|" + item.value + "}";
               }
             });
             return text;
+          },
+          textStyle: {
+            rich: {
+              a: {
+                color: "#3aa7ee",
+                fontSize: 12,
+              },
+              b: {
+                color: "#d18814",
+                fontSize: 12,
+                padding: 4,
+              },
+            },
           },
         },
         graphic: {
@@ -198,7 +229,17 @@ export default {
       let option = {
         tooltip: {
           trigger: "item",
-          formatter: "{b} : {d}% <br/> {c}",
+          formatter: function (params) {
+            if (params.componentType == "series") {
+              var str =
+                params.data.name +
+                `<span style="color:#ffac29">${params.data.num}%</span>` +
+                params.data.value;
+              return str;
+            } else {
+              return "";
+            }
+          },
         },
         legend: {
           orient: "vertical",
@@ -211,10 +252,23 @@ export default {
             let text = "";
             data.forEach((item) => {
               if (item.name == name) {
-                text = name + "(" + item.value + ")";
+                text = "{a|" + name + "}" + "{b|" + item.value + "}";
               }
             });
             return text;
+          },
+          textStyle: {
+            rich: {
+              a: {
+                color: "#3aa7ee",
+                fontSize: 12,
+              },
+              b: {
+                color: "#d18814",
+                fontSize: 12,
+                padding: 4,
+              },
+            },
           },
         },
         graphic: {

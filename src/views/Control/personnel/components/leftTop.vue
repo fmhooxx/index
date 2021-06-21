@@ -1,7 +1,11 @@
 <template>
   <div class="left_top_box">
-    <div class="box_title">
-      <commonTopText :commonTopText="'一人一档统计'"></commonTopText>
+    <div class="box_title" @click="jump">
+      <commonTopText
+        :flag="true"
+        ref="commonTopText"
+        :commonTopText="'一人一档统计(布控)'"
+      ></commonTopText>
     </div>
     <div class="box_list">
       <div
@@ -62,6 +66,10 @@ export default {
     this.getHistogram();
   },
   methods: {
+    // 跳转页面
+    jump() {
+      this.$refs.commonTopText.goUrl("/peopleOutDetails");
+    },
     // 点击 list 切换显示
     currentChange(index) {
       this.current = index;

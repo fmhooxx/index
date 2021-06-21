@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">
+    <div class="title" :class="type == true ? 'type_test' : ''">
       <div class="common_title title_left">
         <div class="timer">{{ timer }}</div>
         <div class="region">宁波市公安局港航分局</div>
@@ -16,7 +16,7 @@
               导航<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="a">测试链接</el-dropdown-item>
+              <el-dropdown-item command="a">布控预警</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -31,7 +31,11 @@ export default {
   props: {
     commonTitleText: {
       type: String,
-      default: "数字海港",
+      default: "数智港警",
+    },
+    type: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -48,7 +52,7 @@ export default {
   },
   methods: {
     handleCommand(item) {
-      window.open("https://www.baidu.com/");
+      // window.open("http://41.204.15.209:10219");
     },
     // 获取当前的日期
     getNewTime() {
@@ -120,5 +124,10 @@ export default {
       }
     }
   }
+}
+.type_test {
+  position: absolute;
+  background-color: #000;
+  z-index: 9999;
 }
 </style>

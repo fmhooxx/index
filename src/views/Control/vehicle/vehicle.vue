@@ -1,6 +1,6 @@
 <template>
   <div class="contain">
-    <commonTitle :commonTitleText="'数字海港 — 车辆管控'"></commonTitle>
+    <commonTitle :commonTitleText="'数智港警 — 车辆管控'"></commonTitle>
     <div class="box">
       <div class="box_common box_left">
         <leftTop class="box_bgi leftTop"></leftTop>
@@ -97,10 +97,10 @@ export default {
     .box_left {
       width: 25%;
       .leftTop {
-        height: 55%;
+        height: 50%;
       }
       .leftBottom {
-        height: 44%;
+        height: 49%;
       }
     }
     .box_middle {
@@ -116,10 +116,10 @@ export default {
     .box_right {
       width: 25%;
       .rightTop {
-        height: 55%;
+        height: 50%;
       }
       .rightBottom {
-        height: 44%;
+        height: 49%;
       }
     }
     .box_common {

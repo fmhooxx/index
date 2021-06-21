@@ -1,75 +1,62 @@
 <template>
-  <div>
-    <div class="box">
-      <div class="box_title">
-        <div class="box_title_left">
-          <img
-            src="@/assets/image/Home/right_arrow.png"
-            alt="船只违法行为管控"
-          />
-          <div>船只违法行为管控</div>
-        </div>
+  <div class="right_bottom_box">
+    <div class="box_title">
+      <commonTopText :commonTopText="'船只违法行为管控'"></commonTopText>
+    </div>
+    <div class="content">
+      <div class="histogram_box">
+        <div
+          ref="histogram"
+          :style="{ height: 100 + '%', width: 100 + '%' }"
+        ></div>
       </div>
-      <div class="top_box">
-        <div ref="top" :style="{ height: 100 + '%', width: 100 + '%' }"></div>
-      </div>
-
-      <div class="area_title">
-        <div class="area_title_left">
+      <div class="ships_box">
+        <div class="ships_box_title">
           <span></span>
           <div>船只违规行为比例</div>
         </div>
-      </div>
-      <div class="annular_box">
-        <div
-          ref="annular"
-          :style="{ height: 100 + '%', width: 100 + '%' }"
-        ></div>
+        <div class="ships_bottom">
+          <div
+            ref="ships"
+            :style="{ height: 100 + '%', width: 100 + '%' }"
+          ></div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-let that = "";
 export default {
   data() {
-    return {
-      // 船只数据列表
-    };
-  },
-  beforeCreate() {
-    that = this;
+    return {};
   },
   mounted() {
-    // 获取车辆管控的环状图
-    this.annular();
-    this.top();
+    // 获取柱状图数据
+    this.getHistogram();
+    // 获取扇形图数据
+    this.getShips();
   },
   methods: {
-    // 点击切换 日、周、月
-    dateChange(index) {
-      this.dateCurrent = index;
-    },
-    // 获取人员管控的环状图
-    top() {
-      let myChart = this.$echarts.init(this.$refs.top);
+    // 获取柱状图数据
+    getHistogram() {
+      let myChart = this.$echarts.init(this.$refs.histogram);
       window.onresize = myChart.resize;
       let option = {
         tooltip: {
           trigger: "axis",
           axisPointer: {
-            type: "cross",
+            type: "shadow",
             crossStyle: {
               color: "#999",
             },
           },
         },
         grid: {
-          top: "10%",
+          top: "25%",
           left: "0%",
           right: "0%",
-          bottom: "10%",
+          bottom: "0%",
           containLabel: true,
         },
         xAxis: [
@@ -91,6 +78,7 @@ export default {
         yAxis: [
           {
             type: "value",
+            name: "单位: 艘",
             min: 0,
             // axisLabel: {
             //   formatter: '{value} °C',
@@ -109,16 +97,16 @@ export default {
         ],
         series: [
           {
-            name: "违法船只",
+            name: "进港船只",
             type: "bar",
-            data: [9900, 5000, 9900, 5000],
+            data: [100, 200, 300, 400],
             barWidth: 20,
             itemStyle: {
               normal: {
                 color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: "#142949" }, //柱图渐变色
-                  { offset: 0.5, color: "#0b6e94" }, //柱图渐变色
-                  { offset: 1, color: "#01b2df" }, //柱图渐变色
+                  { offset: 0, color: "#00caff" }, //柱图渐变色
+                  { offset: 0.5, color: "#0089e9" }, //柱图渐变色
+                  { offset: 1, color: "#0040ce" }, //柱图渐变色
                 ]),
               },
             },
@@ -127,20 +115,12 @@ export default {
       };
       myChart.setOption(option);
     },
-    annular() {
-      // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(this.$refs.annular);
+    // 获取扇形图数据
+    getShips() {
+      let myChart = this.$echarts.init(this.$refs.ships);
       window.onresize = myChart.resize;
       // 环状图的颜色
-      var colorList = [
-        "#7eacea",
-        "#e15777",
-        "#95ea71",
-        "#ea9b4f",
-        "#7577df",
-        "#be72d8",
-        "#fff",
-      ];
+      var colorList = ["#ffdf00", "#ff8f4f", "#009be6", "#a22cb2"];
       // 绘制图表
       let option = {
         tooltip: {
@@ -150,22 +130,21 @@ export default {
         series: [
           {
             type: "pie",
-            radius: "70%",
-            roseType: "radius",
+            radius: "100%",
             center: ["50%", "50%"],
-            // roseType: 'radius',
+            roseType: "radius",
             data: [
               {
-                value: 2500,
-                name: "其他",
+                value: 3000,
+                name: "偷渡船",
               },
               {
                 value: 2000,
                 name: "违法停靠船",
               },
               {
-                value: 3000,
-                name: "偷渡船",
+                value: 2500,
+                name: "其他",
               },
               {
                 value: 2500,
@@ -198,7 +177,7 @@ export default {
                     params.data.name +
                     "}" +
                     "{b|\n" +
-                    ((params.data.value / 10000) * 100).toFixed(2) +
+                    ((params.data.value / 175043) * 100).toFixed(2) +
                     "%}" +
                     "{c|\n" +
                     params.data.value +
@@ -231,88 +210,44 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.box {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.right_bottom_box {
   .box_title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .box_title_left {
-      display: flex;
-      align-items: center;
-      color: #50f4c1;
-      > img {
-        height: 0.6rem;
-      }
-      > div {
-        font-size: 0.65rem;
-        font-weight: bold;
-        margin-left: 1rem;
-      }
-    }
-    .box_title_right {
-      font-size: 0.14rem;
-      display: flex;
-      align-items: center;
-      border: 0.02rem solid #0f3a64;
-      > div {
-        color: #20a8ce;
-        padding: 0.2rem;
-        cursor: pointer;
-      }
-      .area_title_right_tow {
-        border-left: 0.01rem solid #0f3a64;
-        border-right: 0.01rem solid #0f3a64;
-      }
-      .activeDate {
-        background-color: #0f3a64;
-      }
-    }
-    .area_title_right_tow {
-      border-left: 0.01rem solid #0f3a64;
-      border-right: 0.01rem solid #0f3a64;
-    }
-    .activeDate {
-      background-color: #0f3a64;
-    }
-  }
-  .annular {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .area_title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.14rem;
     color: #50f4c1;
-    margin-bottom: 0.3rem;
-    .area_title_left {
-      display: flex;
-      align-items: center;
-      height: 100%;
-      > span {
-        width: 0.1rem;
-        height: 0.4rem;
-        background-color: #50f4c1;
-        margin-right: 0.4rem;
+  }
+  .content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0.2rem;
+    > div {
+      height: 50%;
+      width: 100%;
+    }
+    .histogram_box {
+      height: 45%;
+    }
+    .ships_box {
+      margin-top: 0.4rem;
+      .ships_box_title {
+        display: flex;
+        align-items: center;
+        font-size: 0.3rem;
+        color: #00ffff;
+        margin-bottom: 0.3rem;
+        > span {
+          height: 0.4rem;
+          width: 0.1rem;
+          background-color: #00ffff;
+          margin-right: 0.4rem;
+        }
+      }
+      .ships_bottom {
+        // margin-top: 0.3rem;
+        height: 4.6rem;
+        // width: 100%;
       }
     }
-  }
-  .annular_box {
-    height: 50%;
-  }
-  .top {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .top_box {
-    height: 50%;
   }
 }
 </style>

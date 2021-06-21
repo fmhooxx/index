@@ -1,7 +1,7 @@
 <template>
   <div class="left_top_box">
     <div class="box_title">
-      <commonTopText :commonTopText="'车辆违法行为管控'"></commonTopText>
+      <commonTopText :commonTopText="'货物吞吐量'"></commonTopText>
     </div>
     <div class="box_list_box">
       <div class="box_list_box_total">总数量: <span>45608</span></div>
@@ -21,10 +21,10 @@
     <div class="goods_box">
       <div class="goods_box_title">
         <span></span>
-        <div>车辆违规行为比例</div>
+        <div>货物比例</div>
       </div>
       <div class="goods_box_annular">
-        <div ref="goods" :style="{ height: 100 + '%', width: 100 + '%' }">
+        <div ref="goods" :style="{ height: 80 + '%', width: 100 + '%' }">
           33
         </div>
       </div>
@@ -69,45 +69,145 @@ export default {
     },
     // 获取人员管控的环状图
     annular() {
+      let myChart = this.$echarts.init(this.$refs.goods);
+      window.onresize = myChart.resize;
+      var colorList = [
+        "#00e506",
+        "#00ff00",
+        "#ffeb00",
+        "#ffa200",
+        "#ff7000",
+        "#005bff",
+        "#00aaff",
+        "#00feea",
+      ];
       let data = [
         {
-          value: 3000,
-          name: "载重",
+          value: 300,
+          name: "意大利",
         },
         {
-          value: 2000,
-          name: "其他",
+          value: 30,
+          name: "菲律宾",
         },
         {
-          value: 2500,
-          name: "预停牌",
+          value: 50,
+          name: "日本",
         },
         {
-          value: 2500,
-          name: "违停",
+          value: 80,
+          name: "韩国",
+        },
+        {
+          value: 70,
+          name: "马来西亚",
+        },
+        {
+          value: 150,
+          name: "俄罗斯",
         },
       ];
       let total = 0;
       data.forEach((item) => {
         total += item.value;
       });
-      // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(this.$refs.goods);
-      window.onresize = myChart.resize;
-      // 环状图的颜色
-      var colorList = ["#fede00", "#ff8e54", "#469ae3", "#8c30ad"];
+      data.map((item) => {
+        item.num = ((item.value / total) * 100).toFixed(2);
+      });
       // 绘制图表
       let option = {
         tooltip: {
           trigger: "item",
-          formatter: "{b} : {d}% <br/> {c}",
+          formatter: function (params) {
+            if (params.componentType == "series") {
+              var str =
+                params.data.name +
+                `<span style="color:#ffac29">${params.data.num}%</span>` +
+                params.data.value;
+              return str;
+            } else {
+              return "";
+            }
+          },
+        },
+        legend: {
+          orient: "vertical",
+          top: "center",
+          textStyle: {
+            color: "#039dc6",
+          },
+          type: "scroll",
+          itemWidth: 5, // 宽
+          itemHeight: 5, // 高
+          icon: "circle",
+          x: "40%",
+          formatter(name) {
+            let text = "";
+            data.forEach((item) => {
+              if (item.name == name) {
+                text =
+                  "{a|" +
+                  name +
+                  "}" +
+                  "{b|" +
+                  item.num +
+                  "%" +
+                  "}" +
+                  "{a|" +
+                  item.value +
+                  "}";
+              }
+            });
+            return text;
+          },
+          textStyle: {
+            rich: {
+              a: {
+                color: "#3aa7ee",
+                fontSize: 12,
+              },
+              b: {
+                color: "#d18814",
+                fontSize: 12,
+                padding: 4,
+              },
+            },
+          },
+        },
+        graphic: {
+          elements: [
+            {
+              type: "text",
+              style: {
+                text: "进口货物",
+                width: 200,
+                height: 200,
+                fill: "#00a1ed",
+                fontSize: 12,
+              },
+              left: "13.5%",
+              top: "42.5%",
+            },
+            {
+              type: "text",
+              style: {
+                text: "来源地占比",
+                width: 200,
+                height: 200,
+                fill: "#00a1ed",
+                fontSize: 12,
+              },
+              left: "12.5%",
+              top: "52.5%",
+            },
+          ],
         },
         series: [
           {
             type: "pie",
-            // radius: [30, 50],
-            center: ["50%", "50%"],
-            roseType: "radius",
+            radius: [40, 60],
+            center: ["20%", "50%"],
+            avoidLabelOverlap: false,
             data: data,
             // 设置圆环颜色
             itemStyle: {
@@ -117,46 +217,12 @@ export default {
                 },
               },
             },
-            labelLine: {
-              normal: {
-                show: true,
-                length: 1,
-                length2: 20,
-                lineStyle: {
-                  width: 2,
-                },
-              },
-            },
             label: {
-              normal: {
-                formatter: function (params) {
-                  var str =
-                    "{c|" +
-                    params.data.name +
-                    "}" +
-                    "{c|\n" +
-                    ((params.data.value / total) * 100).toFixed(2) +
-                    "%}" +
-                    "{b|\n" +
-                    params.data.value +
-                    "}";
-                  return str;
-                },
-                rich: {
-                  c: {
-                    color: "#97c5f6",
-                    fontSize: 12,
-                    align: "left",
-                    padding: 4,
-                  },
-                  b: {
-                    color: "#ffac29",
-                    fontSize: 12,
-                    align: "left",
-                    padding: 4,
-                  },
-                },
-              },
+              show: false,
+              position: "center",
+            },
+            labelLine: {
+              show: false,
             },
           },
         ],
@@ -183,7 +249,7 @@ export default {
       > span {
         font-size: 0.8rem;
         font-weight: bold;
-        color: #a94fe8;
+        color: #eca814;
         margin-left: 0.4rem;
       }
     }
@@ -242,7 +308,7 @@ export default {
     }
     .goods_box_annular {
       margin-top: 0.3rem;
-      height: 6.6em;
+      height: 8.6rem;
       width: 100%;
     }
   }

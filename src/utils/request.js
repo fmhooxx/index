@@ -10,8 +10,10 @@ import {
 
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://192.168.22.1:8082/', // url = base url + request url
+  baseURL: 'http://41.204.107.10:8089/', // 线上
+  // baseURL: 'http://47.111.133.16:8089/', // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
+  // baseURL: '41.204.107.10:82',
   timeout: 5000 // request timeout
 })
 

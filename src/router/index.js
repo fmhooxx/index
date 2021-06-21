@@ -6,7 +6,9 @@ import vehicle from '../views/Control/vehicle/vehicle.vue'
 import ships from '../views/Control/ships/ships.vue'
 import earlyWarning from '../views/Control/earlyWarning/earlyWarning.vue'
 import goods from '../views/Control/goods/goods.vue'
-import peopleOutDetails from '../views/Control/personnel/peopleOutDetails.vue'
+import peopleOutDetails from '../views/Control/personnel/peopleOutDetails/peopleOutDetails.vue'
+import driverList from '../views/Control/vehicle/driverList/driverList.vue'
+import keyPersonnelList from '../views/Control/personnel/keyPersonnelList/keyPersonnelList.vue'
 
 Vue.use(VueRouter)
 
@@ -61,6 +63,22 @@ const routes = [{
     component: peopleOutDetails,
     meta: {
       title: '人员进出详情'
+    },
+  },
+  {
+    path: '/driverList',
+    name: 'driverList',
+    component: driverList,
+    meta: {
+      title: '注册司机列表'
+    },
+  },
+  {
+    path: '/keyPersonnelList',
+    name: 'keyPersonnelList',
+    component: keyPersonnelList,
+    meta: {
+      title: '重点人员列表'
     },
   },
   // {

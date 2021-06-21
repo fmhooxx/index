@@ -130,11 +130,46 @@ export default {
         "#be72d8",
         "#fff",
       ];
+      let data = [
+        {
+          value: 3735,
+          name: "北仑港口",
+        },
+        {
+          value: 7843,
+          name: "镇海港口",
+        },
+        {
+          value: 3735,
+          name: "穿山港区",
+        },
+        {
+          value: 7000,
+          name: "梅山港区",
+        },
+      ];
+      let total = 0;
+      data.forEach((item) => {
+        total += item.value;
+      });
+      data.map((item) => {
+        item.num = ((item.value / total) * 100).toFixed(2);
+      });
       // 绘制图表
       let option = {
         tooltip: {
           trigger: "item",
-          formatter: "{b} : {d}% <br/> {c}",
+          formatter: function (params) {
+            if (params.componentType == "series") {
+              var str =
+                params.data.name +
+                `<span style="color:#ffac29">${params.data.num}%</span>` +
+                params.data.value;
+              return str;
+            } else {
+              return "";
+            }
+          },
         },
         graphic: {
           elements: [
@@ -170,24 +205,7 @@ export default {
             radius: [40, 50],
             center: ["50%", "50%"],
             // roseType: 'radius',
-            data: [
-              {
-                value: 3735,
-                name: "北仑港口",
-              },
-              {
-                value: 7843,
-                name: "镇海港口",
-              },
-              {
-                value: 3735,
-                name: "穿山港区",
-              },
-              {
-                value: 7000,
-                name: "梅山港区",
-              },
-            ],
+            data: data,
             // 设置圆环颜色
             itemStyle: {
               normal: {
@@ -214,7 +232,7 @@ export default {
                     params.data.name +
                     "}" +
                     "{b|\n" +
-                    ((params.data.value / 175043) * 100).toFixed(2) +
+                    params.data.num +
                     "%}" +
                     "{c|\n" +
                     params.data.value +
@@ -266,7 +284,6 @@ export default {
       > div {
         font-size: 0.65rem;
         font-weight: bold;
-        margin-left: 1rem;
       }
     }
     .box_title_right {
